@@ -12,6 +12,8 @@ namespace Poppy
 {
     internal class Program
     {
+        public static readonly Obj_AI_Hero player = ObjectManager.Player;
+
         public static Spell Q;
         public static Spell W;
         public static Spell E;
@@ -30,7 +32,7 @@ namespace Poppy
         private static void Game_OnGameLoad(EventArgs args)
         {
             Q = new Spell(SpellSlot.Q, 0);
-            
+
             W = new Spell(SpellSlot.W, 0);
 
             E = new Spell(SpellSlot.E, 525);
@@ -87,7 +89,7 @@ namespace Poppy
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnGameUpdate;
         }
-      
+
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
@@ -111,7 +113,7 @@ namespace Poppy
                 Q.CastIfHitchanceEquals(target, HitChance.Medium, false);
             }
 
-            if (Menu.Item("comboW").GetValue<bool>() && player.Distance(target.Position)<E.Range && W.IsReady())
+            if (Menu.Item("comboW").GetValue<bool>() && player.Distance(target.Position) < E.Range && W.IsReady())
             {
                 W.Cast();
             }
@@ -128,7 +130,7 @@ namespace Poppy
 
         }
 
-       /* private static void Harass()
+        private static void Harass()
         {
             var target = TargetSelector.GetTarget(1200, TargetSelector.DamageType.Magical);
 
@@ -141,7 +143,7 @@ namespace Poppy
             {
                 W.Cast();
             }
-        } */
+        }
 
 
     }
