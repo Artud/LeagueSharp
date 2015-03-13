@@ -84,16 +84,6 @@ namespace Poppy
  
         private static void Game_OnGameUpdate(EventArgs args)
         {
-            /*if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-            {
-                Combo();
-            }
-            else if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
-            {
-                Harass();
-            }*/
- 
-            // I think that this is a better way to check combo's
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
