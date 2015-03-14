@@ -130,12 +130,12 @@ namespace Poppy
             }
  
             // since you initialized it as Player it should be Player and not player
-            if (Menu.Item("comboW").GetValue<bool>() && Player.Distance(target.Position) < R.Range + 300 && Player.Distance(target.Position) > Orbwalking.GetRealAutoAttackRange(target) && W.IsReady())
+            if (Menu.Item("comboW").GetValue<bool>() && Player.Distance(target.Position) < R.Range + 300) //&& Player.Distance(target.Position) > Orbwalking.GetRealAutoAttackRange(target) && W.IsReady())
             {
                 W.Cast();
             }
  
-            if (Menu.Item("comboE").GetValue<bool>() && E.IsReady() && R.IsReady() && target.Distance(ObjectManager.Player.Position) > R.Range)
+            if (Menu.Item("comboE").GetValue<bool>() && E.IsReady() && target.Distance(ObjectManager.Player.Position) <= E.Range)
             {
                 if (E.GetDamage(target) < target.Health)
                 {
