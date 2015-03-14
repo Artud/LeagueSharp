@@ -52,6 +52,7 @@ namespace Poppy
                 var harassMenu = new Menu("Harass", "Harass");
                 {
                     harassMenu.AddItem(new MenuItem("harassQ", "Usar Q", true));
+                    harassMenu.AddItem(new MenuItem("manaH", "Mana To Harass").SetValue(new Slider(40, 100, 0)));
                     champMenu.AddSubMenu(harassMenu);
                 }
                 var clearMenu = new Menu("Clear", "Clear");
@@ -71,6 +72,8 @@ namespace Poppy
                 {
                     miscMenu.AddItem(new MenuItem("checkNO", "Number of E checks")).SetValue(new Slider(10, 1, 30)); // this is the number of checks that occur when casting E, the more tha laggier but more precise
                     var killStealMenu = new Menu("Kill Steal", "KillSteal");
+                    killStealMenu.AddItem(new MenuItem("ksQ", "Q KS", true));
+                    killStealMenu.AddItem(new MenuItem("ksE", "E KS", true));
                     {
                         miscMenu.AddSubMenu(killStealMenu);
                     }
@@ -125,8 +128,10 @@ namespace Poppy
 
         private static void Harass()
         {
-            if (Menu.Item("harassQ").GetValue<bool>() && Q.IsReady() &&
-                target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target))
+            var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Magical);
+
+            if (Menu.Item("harassQ").GetValue<bool>() && Q.IsReady() && target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target) && (ObjectManager.Player.Mana/ObjectManager.Player.MaxMana*100) >
+                Menu.Item("manaH").GetValue<Slider>().Value)
             {
                 Q.Cast();
             }
@@ -136,7 +141,8 @@ namespace Poppy
         {
             var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Magical);
  
-            if (Menu.Item("comboQ").GetValue<bool>() && Q.IsReady() && target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target))
+            if (Menu.Item("comboQ").GetValue<bool>() && Q.IsReady() && target.Distance(Player) <= 
+                Orbwalking.GetRealAutoAttackRange(target))
             {
                 Q.Cast();
             }
@@ -148,7 +154,8 @@ namespace Poppy
  
             if (Menu.Item("comboE").GetValue<bool>() && E.IsReady() && target.Distance(ObjectManager.Player.Position) <= E.Range)
             {
-                if (E.GetDamage(target) > target.Health || ((E.GetDamage(target) + Q.GetDamage(target)) > target.Health && Q.IsReady()) )
+                if (E.GetDamage(target) > target.Health || ((E.GetDamage(target) + Q.GetDamage(target)) > 
+                    target.Health && Q.IsReady()) )
                 {
                     E.CastOnUnit(target);//Btw I did this so it e´s and q for kill, is it right?
                 }
@@ -164,7 +171,8 @@ namespace Poppy
                     return;
                 int priority = 0;
                 Obj_AI_Hero selectedUnit = null;
-                foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsEnemy && R.IsInRange(hero) && hero.IsValidTarget()))
+                foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsEnemy && R.IsInRange(hero) &&
+                    hero.IsValidTarget()))
                 {
                     if (Menu.Item(enemy.ChampionName + "prior").GetValue<Slider>().Value > priority)
                     {
@@ -179,6 +187,22 @@ namespace Poppy
                 R.CastOnUnit(selectedUnit);
             }
  
+        }
+
+        private static void KillSteal()
+        {
+            var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Magical);
+
+            if (Menu.Item("ksQ").GetValue<bool>() && Q.IsReady() && Q.IsKillable(target))
+            {
+                Q.Cast(target);
+            }
+
+            if (Menu.Item("ksE").GetValue<bool>() && E.IsReady() && E.IsKillable(target))
+            {
+                E.Cast(target);
+            }
+            
         }
 
         public static bool UnderTower(this Vector3 pos)
@@ -197,7 +221,8 @@ namespace Poppy
             var predictedPosition = Prediction.GetPrediction(target, 0.5f);//Predicteded position of the target in the cast time
             for (int i = 1; i <= Menu.Item("checkNO").GetValue<Slider>().Value; i++)
             {
-                if (predictedPosition.UnitPosition.Extend(Player.Position, -(i * checkNumber)).IsWall() || predictedPosition.UnitPosition.Extend(Player.Position, -(i * checkNumber)).UnderTower())
+                if (predictedPosition.UnitPosition.Extend(Player.Position, -(i * checkNumber)).IsWall() || 
+                    predictedPosition.UnitPosition.Extend(Player.Position, -(i * checkNumber)).UnderTower())
                 {
                     if (Player.HealthPercent <= 30 || Player.CountEnemiesInRange(1500) >= 2 || R.IsReady())
                     {
