@@ -2,6 +2,7 @@
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Color = System.Drawing.Color;
 
 namespace Poppy
 {
@@ -77,8 +78,7 @@ namespace Poppy
                 }
                 var drawMenu = new Menu("Draw", "Draw");
                 {
-                    drawMenu.AddItem(new MenuItem("drawQ", "Draw Q", true));
-                    drawMenu.AddItem(new MenuItem("drawW", "Draw W", true));
+                    drawMenu.AddItem(new MenuItem("drawE", "Draw E", true));
                     drawMenu.AddItem(new MenuItem("drawR", "Draw R", true));
                     champMenu.AddSubMenu(drawMenu);
                 }
@@ -112,6 +112,14 @@ namespace Poppy
         }
  
         private static void Drawing_OnDraw(EventArgs args) {
+            if (Menu.Item("drawE").GetValue<bool>())
+            {
+                Drawing.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.Green);
+            }
+            if (Menu.Item("drawR").GetValue<bool>())
+            {
+                Drawing.DrawCircle(ObjectManager.Player.Position, R.Range, System.Drawing.Color.Green);
+            }
             // draw handler
         }
  
