@@ -205,7 +205,7 @@ namespace Poppy
             
         }
 
-        public static bool UnderTower(this Vector3 pos)
+        private static bool UnderTower(this Vector3 pos)
         {
             return
                 ObjectManager.Get<Obj_AI_Turret>()
