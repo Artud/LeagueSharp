@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -38,6 +39,12 @@ namespace Poppy
                     comboMenu.AddItem(new MenuItem("comboW", "Usar W", true));
                     comboMenu.AddItem(new MenuItem("comboE", "Usar E", true));
                     comboMenu.AddItem(new MenuItem("comboR", "Usar R", true));
+                    var RMenu = comboMenu.AddSubMenu(new Menu("R Priority", "rpri"));
+                    foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(a => a.IsEnemy)) // gets every enemy and does the check for each of them.
+                    {
+                        RMenu.AddItem(new MenuItem(target.ChampionName + "prior", target.ChampionName).SetValue(new Slider(1,1,5))); // creates a slider for each of the enemies, you can have them arrange the priority for each of them.
+                    }
+                    RMenu.AddItem(new MenuItem("sdsdsa", "1 is lowest"));
                     champMenu.AddSubMenu(comboMenu);
                 }
                 var harassMenu = new Menu("Harass", "Harass");
@@ -61,6 +68,7 @@ namespace Poppy
                 }
                 var miscMenu = new Menu("Misc", "Misc");
                 {
+                    miscMenu.AddItem(new MenuItem("checkNO", "Number of E checks")).SetValue(new Slider(10, 1, 30)); // this is the number of checks that occur when casting E, the more tha laggier but more precise
                     var killStealMenu = new Menu("Kill Steal", "KillSteal");
                     {
                         miscMenu.AddSubMenu(killStealMenu);
@@ -110,27 +118,66 @@ namespace Poppy
         {
             var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
  
-            if (Menu.Item("comboQ").GetValue<bool>() && Q.IsReady() && Q.IsInRange(target))
+            if (Menu.Item("comboQ").GetValue<bool>() && Q.IsReady() && target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target))
             {
-                Q.CastIfHitchanceEquals(target, HitChance.Medium, false);
+                Q.Cast();
             }
  
             // since you initialized it as Player it should be Player and not player
-            if (Menu.Item("comboW").GetValue<bool>() && Player.Distance(target.Position)<E.Range && W.IsReady())
+            if (Menu.Item("comboW").GetValue<bool>() && Player.Distance(target.Position) < R.Range + 300 && Player.Distance(target.Position) > Orbwalking.GetRealAutoAttackRange(target) && W.IsReady())
             {
                 W.Cast();
             }
  
             if (Menu.Item("comboE").GetValue<bool>() && E.IsReady() && R.IsReady() && target.Distance(ObjectManager.Player.Position) > R.Range)
             {
-                //ToDo
+                if (E.GetDamage(target) < target.Health)
+                {
+                    WallStunTarget(target);
+                }
+                else
+                {
+                    E.CastOnUnit(target);
+                }
             }
  
-            if (Menu.Item("comboR").GetValue<bool>() && R.IsReady() && R.IsInRange(target))
+            if (Menu.Item("comboR").GetValue<bool>() && R.IsReady())
             {
-                //ToDo
+                if (Player.HealthPercent > 30 || Player.CountEnemiesInRange(1500) >= 2) //TODO: Added Checks
+                    return;
+                int priority = 0;
+                Obj_AI_Hero selectedUnit = null;
+                foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsEnemy && R.IsInRange(hero) && hero.IsValidTarget()))
+                {
+                    if (Menu.Item(enemy.ChampionName + "prior").GetValue<Slider>().Value > priority)
+                    {
+                        priority = Menu.Item(enemy.ChampionName + "prior").GetValue<Slider>().Value;
+                        selectedUnit = enemy;
+                        if (Menu.Item(enemy.ChampionName + "prior").GetValue<Slider>().Value == 5)
+                            break;
+                    }
+                }
+                if (!selectedUnit.IsValidTarget())
+                    return;
+                R.CastOnUnit(selectedUnit);
             }
  
+        }
+
+        private static void WallStunTarget(Obj_AI_Hero target)
+        {
+            var pushbackDist = 100;
+            var _checkNumber = (pushbackDist / Menu.Item("checkNO").GetValue<Slider>().Value); //Divides pushback dist by number of checks
+            var predictedPosition = Prediction.GetPrediction(target, 0.5f);//Predicteded position of the target in the cast time
+            for (int i = 1; i <= Menu.Item("checkNO").GetValue<Slider>().Value; i++)
+            {
+                if (predictedPosition.UnitPosition.Extend(Player.Position, -(i * _checkNumber)).IsWall())
+                {
+                    E.CastOnUnit(target);
+                    break;
+                }
+
+            }
         }
     }
 }
