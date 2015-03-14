@@ -87,6 +87,12 @@ namespace Poppy
  
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnGameUpdate;
+            AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
+        }
+
+        static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
+        {
+               
         }
       
  
@@ -167,11 +173,11 @@ namespace Poppy
         private static void WallStunTarget(Obj_AI_Hero target)
         {
             var pushbackDist = 100;
-            var _checkNumber = (pushbackDist / Menu.Item("checkNO").GetValue<Slider>().Value); //Divides pushback dist by number of checks
+            var checkNumber = (pushbackDist / Menu.Item("checkNO").GetValue<Slider>().Value); //Divides pushback dist by number of checks
             var predictedPosition = Prediction.GetPrediction(target, 0.5f);//Predicteded position of the target in the cast time
             for (int i = 1; i <= Menu.Item("checkNO").GetValue<Slider>().Value; i++)
             {
-                if (predictedPosition.UnitPosition.Extend(Player.Position, -(i * _checkNumber)).IsWall())
+                if (predictedPosition.UnitPosition.Extend(Player.Position, -(i * checkNumber)).IsWall())
                 {
                     E.CastOnUnit(target);
                     break;
