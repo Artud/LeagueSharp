@@ -232,7 +232,7 @@ namespace Poppy
                     }
                     else
                     {
-                        E.CastOnUnit(target);   //So now it throws enemy under tower right, ok does the wallcheck also checks for tower stun? Nice :) Btw are you sure this thing I coded is right? Oh yea I was gonna ask, Where do I add it though? Mind showing me, Sure
+                        E.CastOnUnit(target);  
                         break;
                     }
                    
