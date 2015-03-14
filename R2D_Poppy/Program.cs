@@ -37,10 +37,10 @@ namespace Poppy
             {
                 var comboMenu = new Menu("Combo", "Combo");
                 {
-                    comboMenu.AddItem(new MenuItem("comboQ", "Usar Q", true));
-                    comboMenu.AddItem(new MenuItem("comboW", "Usar W", true));
-                    comboMenu.AddItem(new MenuItem("comboE", "Usar E", true));
-                    comboMenu.AddItem(new MenuItem("comboR", "Usar R", true));
+                    comboMenu.AddItem(new MenuItem("comboQ", "Use Q", true));
+                    comboMenu.AddItem(new MenuItem("comboW", "Use W", true));
+                    comboMenu.AddItem(new MenuItem("comboE", "Use E", true));
+                    comboMenu.AddItem(new MenuItem("comboR", "Use R", true));
                     var RMenu = comboMenu.AddSubMenu(new Menu("R Priority", "rpri"));
                     foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(a => a.IsEnemy)) // gets every enemy and does the check for each of them.
                     {
@@ -130,8 +130,8 @@ namespace Poppy
         {
             var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Magical);
 
-            if (Menu.Item("harassQ").GetValue<bool>() && Q.IsReady() && target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target) && (ObjectManager.Player.Mana/ObjectManager.Player.MaxMana*100) >
-                Menu.Item("manaH").GetValue<Slider>().Value)
+            if (Menu.Item("harassQ").GetValue<bool>() && Q.IsReady() && target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target) && (ObjectManager.Player.ManaPercentage() >
+                Menu.Item("manaH").GetValue<Slider>().Value))
             {
                 Q.Cast();
             }
