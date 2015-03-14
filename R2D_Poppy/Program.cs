@@ -122,14 +122,13 @@ namespace Poppy
  
         private static void Combo()
         {
-            var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Magical);
  
             if (Menu.Item("comboQ").GetValue<bool>() && Q.IsReady() && target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target))
             {
                 Q.Cast();
             }
  
-            // since you initialized it as Player it should be Player and not player
             if (Menu.Item("comboW").GetValue<bool>() && Player.Distance(target.Position) < R.Range + 300) //&& Player.Distance(target.Position) > Orbwalking.GetRealAutoAttackRange(target) && W.IsReady())
             {
                 W.Cast();
