@@ -18,8 +18,8 @@ namespace Poppy
         // can also be done this way, saves some lines.
         public static Spell Q, W, E, R;
         public static Menu Menu;
-        public static Orbwalking.Orbwalker Orbwalker;
-        private static Obj_AI_Hero Player;
+        private static Orbwalking.Orbwalker _orbwalker;
+        private static Obj_AI_Hero _player;
 
         private static void Main(string[] args)
         {
@@ -35,7 +35,7 @@ namespace Poppy
             Menu.AddSubMenu(tsMenu);
 
             Menu.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
-            Orbwalker = new Orbwalking.Orbwalker(Menu.SubMenu("Orbwalking"));
+            _orbwalker = new Orbwalking.Orbwalker(Menu.SubMenu("Orbwalking"));
 
             Menu.AddSubMenu(new Menu("Combo", "Combo"));
             Menu.SubMenu("Combo").AddItem(new MenuItem("comboQ", "Use Q in Combo?").SetValue(true));
@@ -110,13 +110,15 @@ namespace Poppy
 
             Drawing.OnDraw += Drawing_OnDraw;
 
+            _player = ObjectManager.Player;
+
         }
 
         private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser) {}
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
-            switch (Orbwalker.ActiveMode)
+            switch (_orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo(TargetSelector.GetTarget(1200f, TargetSelector.DamageType.Magical));
@@ -157,8 +159,8 @@ namespace Poppy
         {
 
             if (Menu.Item("harassQ").GetValue<bool>() && Q.IsReady() &&
-                target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target)) //&&
-                //(ObjectManager.Player.ManaPercentage() > Menu.Item("manaH").GetValue<Slider>().Value))
+                target.Distance(_player) <= Orbwalking.GetRealAutoAttackRange(target)) //&&
+                //(ObjectManager._player.ManaPercentage() > Menu.Item("manaH").GetValue<Slider>().Value))
             {
                 Q.Cast();
             }
@@ -168,13 +170,13 @@ namespace Poppy
         {
 
             if (Menu.Item("comboQ").GetValue<bool>() && Q.IsReady() &&
-                target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target))
+                target.Distance(_player) <= Orbwalking.GetRealAutoAttackRange(target))
             {
                 Q.Cast();
             }
 
-            if (Menu.Item("comboW").GetValue<bool>() && Player.Distance(target.Position) < R.Range + 300)
-                //&& Player.Distance(target.Position) > Orbwalking.GetRealAutoAttackRange(target) && W.IsReady())
+            if (Menu.Item("comboW").GetValue<bool>() && _player.Distance(target.Position) < R.Range + 300)
+                //&& _player.Distance(target.Position) > Orbwalking.GetRealAutoAttackRange(target) && W.IsReady())
             {
                 W.Cast();
             }
@@ -195,7 +197,7 @@ namespace Poppy
 
             if (Menu.Item("comboR").GetValue<bool>() && R.IsReady())
             {
-                if (Player.HealthPercent <= 30 || Player.CountEnemiesInRange(1500) >= 2) //TODO: Added Checks
+                if (_player.HealthPercent <= 30 || _player.CountEnemiesInRange(1500) >= 2) //TODO: Added Checks
                 {
                     return;
                 }
@@ -265,7 +267,7 @@ namespace Poppy
 
         /*  private static void LaneClear()
         {
-            var minion = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
+            var minion = MinionManager.GetMinions(_player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
             if (minion == null)
                 return;
 
@@ -290,10 +292,10 @@ namespace Poppy
                 //Predicteded position of the target in the cast time
             for (var i = 1; i <= Menu.Item("checkNO").GetValue<Slider>().Value; i++)
             {
-                if (predictedPosition.UnitPosition.Extend(Player.Position, -(i * checkNumber)).IsWall() ||
-                    predictedPosition.UnitPosition.Extend(Player.Position, -(i * checkNumber)).UnderTower())
+                if (predictedPosition.UnitPosition.Extend(_player.Position, -(i * checkNumber)).IsWall() ||
+                    predictedPosition.UnitPosition.Extend(_player.Position, -(i * checkNumber)).UnderTower())
                 {
-                    if (Player.HealthPercent <= 30 || Player.CountEnemiesInRange(1500) >= 2 || R.IsReady())
+                    if (_player.HealthPercent <= 30 || _player.CountEnemiesInRange(1500) >= 2 || R.IsReady())
                     {
                         R.CastOnUnit(target);
                         E.CastOnUnit(target);
