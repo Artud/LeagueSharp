@@ -33,7 +33,7 @@ namespace Poppy
             E = new Spell(SpellSlot.E, 525);
             R = new Spell(SpellSlot.R, 900);
 
-            var champMenu = new Menu("Plugin", ObjectManager.Player.BaseSkinName + "_Plugin");
+            var champMenu = new Menu("Plugin", ObjectManager.Player.BaseSkinName + "_Plugin", true);
             {
                 var comboMenu = new Menu("Combo", "Combo");
                 {
