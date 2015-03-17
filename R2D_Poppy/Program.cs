@@ -49,6 +49,16 @@ namespace Poppy
             Menu.SubMenu("Combo").AddItem(new MenuItem("comboE", "Use E in combo?").SetValue(true));
             Menu.SubMenu("Combo").AddItem(new MenuItem("comboR", "Use R in combo?").SetValue(true));
             Menu.SubMenu("Combo").AddItem(new MenuItem("Use Ignite", "Use Ignite in combo?").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("checkNO", "E Checks").SetValue(new Slider(10, 1, 30)));
+            var rMenu = Menu.SubMenu("Combo").AddSubMenu(new Menu("R Priority", "rpri"));
+                    foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(a => a.IsEnemy))
+                    {
+                        rMenu.AddItem(
+                            new MenuItem(target.ChampionName + "prior", target.ChampionName).SetValue(
+                                new Slider(1, 1, 5)));
+                        // creates a slider for each of the enemies, you can have them arrange the priority for each of them.
+                    }
+                    rMenu.AddItem(new MenuItem("sdsdsa", "1 is lowest"));
 
             Menu.AddSubMenu(new Menu("Harass", "Harass"));
             Menu.SubMenu("Harass").AddItem(new MenuItem("Use Q", "Use Q in harass?").SetValue(true));
@@ -58,12 +68,11 @@ namespace Poppy
             Menu.SubMenu("Harass").AddItem(new MenuItem("Mana Manager", "Harass MM").SetValue(new Slider(50, 1)));
 
             Menu.AddSubMenu(new Menu("Lane Clear", "Lane Clear"));
-            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("Use Q", "Use Q in lane clear?").SetValue(true));
-            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("Use W", "Use W in lane clear?").SetValue(true));
-            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("Use E", "Use E in lane clear?").SetValue(true));
-            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("Use R", "Use R in lane clear?").SetValue(true));
+            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("laneQ", "Use Q in lane clear?").SetValue(true));
+            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("laneW", "Use W in lane clear?").SetValue(true));
+            //Menu.SubMenu("Lane Clear").AddItem(new MenuItem("Use E", "Use E in lane clear?").SetValue(true));
             Menu.SubMenu("Lane Clear")
-                .AddItem(new MenuItem("Mana Manager", "Lane Clear MM").SetValue(new Slider(50, 1)));
+                .AddItem(new MenuItem("Lane Clear MM", "Mana Manager").SetValue(new Slider(50, 1)));
 
             Menu.AddSubMenu(new Menu("Last Hit", "Last Hit"));
             Menu.SubMenu("Last Hit").AddItem(new MenuItem("Use Q", "Use Q in last hit?").SetValue(true));
@@ -81,17 +90,15 @@ namespace Poppy
                         new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
 
             Menu.AddSubMenu(new Menu("Jungle Clear", "Jungle Clear"));
-            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("Use Q", "Use Q in jungle clear?").SetValue(true));
-            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("Use W", "Use W in jungle clear?").SetValue(true));
-            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("Use E", "Use E in jungle clear?").SetValue(true));
-            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("Use R", "Use R in jungle clear?").SetValue(true));
+            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("jungleQ", "Use Q in jungle clear?").SetValue(true));
+            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("jungleW", "Use W in jungle clear?").SetValue(true));
+            //Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("Use E", "Use E in jungle clear?").SetValue(true));
             Menu.SubMenu("Jungle Clear")
-                .AddItem(new MenuItem("Mana Manager", "Jungle Clear MM").SetValue(new Slider(50, 1)));
+                .AddItem(new MenuItem("Jungle Clear MM", "Mana Manager").SetValue(new Slider(50, 1)));
 
             Menu.AddSubMenu(new Menu("Kill Steal", "Kill Steal"));
-            Menu.SubMenu("Kill Steal").AddItem(new MenuItem("Use Q", "Use Q for kill steal?").SetValue(true));
-            Menu.SubMenu("Kill Steal").AddItem(new MenuItem("Use W", "Use W for kill steal?").SetValue(true));
-            Menu.SubMenu("Kill Steal").AddItem(new MenuItem("Use E", "Use E for kill steal?").SetValue(true));
+            Menu.SubMenu("Kill Steal").AddItem(new MenuItem("ksQ", "Use Q for kill steal?").SetValue(true));
+            Menu.SubMenu("Kill Steal").AddItem(new MenuItem("ksE", "Use E for kill steal?").SetValue(true));
             Menu.SubMenu("Kill Steal").AddItem(new MenuItem("Use Ignite", "Use Ignite for kill steal?").SetValue(true));
 
             Menu.AddSubMenu(new Menu("Misc", "Misc"));
@@ -99,13 +106,12 @@ namespace Poppy
                 .AddItem(
                     new MenuItem("Use Ignite", "Use Ignite in misc?").SetValue(
                         new StringList(new[] { "Combo", "Kill Steal" })));
-            Menu.SubMenu("Misc").AddItem(new MenuItem("Use R first?", "Use R first?").SetValue(true));
-            Menu.SubMenu("Misc").AddItem(new MenuItem("W on Gap Closer", "Use W on Gap Closer?").SetValue(true));
+           // Menu.SubMenu("Misc").AddItem(new MenuItem("Use R first?", "Use R first?").SetValue(true));
+           //Menu.SubMenu("Misc").AddItem(new MenuItem("W on Gap Closer", "Use W on Gap Closer?").SetValue(true));
 
-            Menu.AddSubMenu(new Menu("Drawings", "Drawings"));
-            Menu.SubMenu("Drawings").AddItem(new MenuItem("Draw Q", "Draw Q?").SetValue(true));
-            Menu.SubMenu("Drawings").AddItem(new MenuItem("Draw W", "Draw W?").SetValue(true));
+            Menu.AddSubMenu(new Menu("Drawings", "Drawings"));           
             Menu.SubMenu("Drawings").AddItem(new MenuItem("drawE", "Draw E?").SetValue(true));
+            Menu.SubMenu("Drawings").AddItem(new MenuItem("drawR", "Draw R?").SetValue(true));
 
             Menu.AddToMainMenu();
 
@@ -131,8 +137,8 @@ namespace Poppy
                     Harass(TargetSelector.GetTarget(1200f, TargetSelector.DamageType.Magical));
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
-                    //LaneClear();
-                    //JungleClear();
+                    LaneClear();
+                    JungleClear();
                     break;
             }
             KillSteal();
@@ -140,17 +146,15 @@ namespace Poppy
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (Menu.Item("Draw Q").GetValue<bool>())
-            {
-                Render.Circle.DrawCircle(ObjectManager.Player.Position, Q.Range, Color.Green);
-            }
-            if (Menu.Item("Draw W").GetValue<bool>())
-            {
-                Render.Circle.DrawCircle(ObjectManager.Player.Position, W.Range, Color.Red);
-            }
-            if (Menu.Item("Draw E").GetValue<bool>())
+                 
+            if (Menu.Item("drawE").GetValue<bool>())
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, E.Range, Color.Blue);
+            }
+
+            if (Menu.Item("drawR").GetValue<bool>())
+            {
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, R.Range, Color.Blue);
             }
         }
 
@@ -181,14 +185,18 @@ namespace Poppy
             if (Menu.Item("comboE").GetValue<bool>() && E.IsReady() &&
                 target.Distance(ObjectManager.Player.Position) <= E.Range)
             {
-                if (E.GetDamage(target) > target.Health ||
-                    ((E.GetDamage(target) + Q.GetDamage(target)) > target.Health && Q.IsReady()))
+                if (E.GetDamage(target) > target.Health || target.HealthPercent <= 30 || _player.Distance(target.Position) < E.Range)
                 {
-                    E.CastOnUnit(target); //Btw I did this so it e´s and q for kill, is it right?
+                    E.CastOnUnit(target); 
+                }
+                else if ((E.GetDamage(target) + Q.GetDamage(target)) > target.Health && Q.IsReady())
+                {
+                    E.CastOnUnit(target);
+                    Q.CastOnUnit(target);
                 }
                 else
                 {
-                    WallStunTarget(target);
+                     WallStunTarget(target);
                 }
             }
 
@@ -222,6 +230,70 @@ namespace Poppy
             }
         }
 
+        static void LaneClear()
+        {
+            var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
+
+            if (_player.ManaPercentage() > Menu.Item("Lane Clear MM").GetValue<Slider>().Value)
+            {
+
+                if (Menu.Item("laneQ").GetValue<bool>() && Q.IsReady())
+                {
+                    foreach (var minion in allMinions)
+                    {
+                        if (minion.IsValidTarget())
+                        {
+                            Q.Cast();
+                        }
+                    }
+                }
+
+                if (Menu.Item("laneW").GetValue<bool>() && W.IsReady())
+                {
+                    foreach (var minion in allMinions)
+                    {
+                        if (minion.IsValidTarget())
+                        {
+                            W.Cast();
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void JungleClear()
+        {
+            var allMinions = MinionManager.GetMinions(
+                ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral,
+                MinionOrderTypes.MaxHealth);
+
+            if (_player.ManaPercentage() > Menu.Item("Jungle Clear MM").GetValue<Slider>().Value)
+            {
+                if (Menu.Item("jungleQ").GetValue<bool>() && Q.IsReady())
+                {
+                    foreach (var minion in allMinions)
+                    {
+                        if (minion.IsValidTarget())
+                        {
+                            Q.Cast();
+                        }
+                    }
+                }
+
+
+                if (Menu.Item("jungleW").GetValue<bool>() && W.IsReady())
+                {
+                    foreach (var minion in allMinions)
+                    {
+                        if (minion.IsValidTarget())
+                        {
+                            W.Cast();
+                        }
+                    }
+                }
+            }
+    }
+
         private static void LastHit()
         {
             var keyActive = Menu.Item("Last Hit Key Binding").GetValue<KeyBind>().Active;
@@ -249,8 +321,17 @@ namespace Poppy
 
         private static void KillSteal()
         {
+            var KSableE = HeroManager.Enemies.FindAll(champ => champ.IsValidTarget() && (champ.Health <= ObjectManager.Player.GetSpellDamage(champ, SpellSlot.E)));
+            if (KSableE.Any()) E.CastOnUnit(KSableE.FirstOrDefault());
+
+            var KSableEQ = HeroManager.Enemies.FindAll(champ => champ.IsValidTarget() && (champ.Health <= ObjectManager.Player.GetSpellDamage(champ, SpellSlot.E) + ObjectManager.Player.GetSpellDamage(champ, SpellSlot.Q)));
+            if (KSableEQ.Any())
+            {
+            E.CastOnUnit(KSableEQ.FirstOrDefault());
+            Q.Cast();
+            }
             var champions = ObjectManager.Get<Obj_AI_Hero>();
-            if (Menu.Item("ksQ").GetValue<bool>() && Q.IsReady())
+            /*if (Menu.Item("ksQ").GetValue<bool>() && Q.IsReady())
             {
                 foreach (var champ in
                     champions.Where(champ => champ.Health <= ObjectManager.Player.GetSpellDamage(champ, SpellSlot.Q))
@@ -260,6 +341,16 @@ namespace Poppy
                     break;
                 }
             }
+            if (Menu.Item("ksE").GetValue<bool>() && Q.IsReady())
+            {
+                foreach (var champ in
+                    champions.Where(champ => champ.Health <= ObjectManager.Player.GetSpellDamage(champ, SpellSlot.E))
+                        .Where(champ => champ.IsValidTarget()))
+                {
+                    Q.CastOnUnit(champ);
+                    break;
+                }
+            }*/
         }
 
         private static bool UnderTower(this Vector3 pos)
@@ -283,12 +374,12 @@ namespace Poppy
                 if (predictedPosition.UnitPosition.Extend(_player.Position, -(i * checkNumber)).IsWall() ||
                     predictedPosition.UnitPosition.Extend(_player.Position, -(i * checkNumber)).UnderTower())
                 {
-                    if (_player.HealthPercent <= 30 || _player.CountEnemiesInRange(1500) >= 2 || R.IsReady())
+                   /* if (_player.HealthPercent <= 30 || _player.CountEnemiesInRange(1500) >= 2) && R.IsReady())
                     {
                         R.CastOnUnit(target);
                         E.CastOnUnit(target);
                         break;
-                    }
+                    }*/
                     E.CastOnUnit(target);
                     break;
                 }
