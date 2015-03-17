@@ -89,6 +89,7 @@ namespace Poppy
                     drawMenu.AddItem(new MenuItem("drawR", "Draw R", true));
                     champMenu.AddSubMenu(drawMenu);
                 }
+                champMenu.AddSubMenu(drawMenu);
             }
 
             champMenu.AddToMainMenu();
