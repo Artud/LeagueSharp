@@ -6,7 +6,7 @@ using SharpDX;
 using Color = System.Drawing.Color;
 
 namespace Poppy
-{  
+{
     internal static class Program
     {
         //GITHUB TEST
@@ -28,124 +28,144 @@ namespace Poppy
 
         private static void Game_OnGameLoad(EventArgs args)
         {
-            Q = new Spell(SpellSlot.Q, 0);
-            W = new Spell(SpellSlot.W, 0);
-            E = new Spell(SpellSlot.E, 525);
-            R = new Spell(SpellSlot.R, 900);
+            Menu = new Menu("R2D_Poppy", "Poppy", true);
 
-            var champMenu = new Menu("Plugin", ObjectManager.Player.BaseSkinName + "_Plugin", true);
-            {
-                var comboMenu = new Menu("Combo", "Combo");
-                {
-                    comboMenu.AddItem(new MenuItem("comboQ", "Use Q", true));
-                    comboMenu.AddItem(new MenuItem("comboW", "Use W", true));
-                    comboMenu.AddItem(new MenuItem("comboE", "Use E", true));
-                    comboMenu.AddItem(new MenuItem("comboR", "Use R", true));
-                    var rMenu = comboMenu.AddSubMenu(new Menu("R Priority", "rpri"));
-                    foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(a => a.IsEnemy))
-                        // gets every enemy and does the check for each of them.
-                    {
-                        rMenu.AddItem(
-                            new MenuItem(target.ChampionName + "prior", target.ChampionName).SetValue(
-                                new Slider(1, 1, 5)));
-                            // creates a slider for each of the enemies, you can have them arrange the priority for each of them.
-                    }
-                    rMenu.AddItem(new MenuItem("sdsdsa", "1 is lowest"));
-                    champMenu.AddSubMenu(comboMenu);
-                }
-                var harassMenu = new Menu("Harass", "Harass");
-                {
-                    harassMenu.AddItem(new MenuItem("harassQ", "Usar Q", true));
-                    harassMenu.AddItem(new MenuItem("manaH", "Mana To Harass").SetValue(new Slider(40, 100, 0)));
-                    champMenu.AddSubMenu(harassMenu);
-                }
-                var clearMenu = new Menu("Clear", "Clear");
-                {
-                    champMenu.AddSubMenu(clearMenu);
-                }
-                var lastHitMenu = new Menu("Last Hit", "LastHit");
-                {
-                    champMenu.AddSubMenu(lastHitMenu);
-                }
-                var fleeMenu = new Menu("Flee", "Flee");
-                {
-                    champMenu.AddSubMenu(fleeMenu);
-                }
-                var miscMenu = new Menu("Misc", "Misc");
-                {
-                    miscMenu.AddItem(new MenuItem("checkNO", "Number of E checks")).SetValue(new Slider(10, 1, 30));
-                        // this is the number of checks that occur when casting E, the more tha laggier but more precise
-                    var killStealMenu = new Menu("Kill Steal", "KillSteal");
-                    killStealMenu.AddItem(new MenuItem("ksQ", "Q KS", true));
-                    killStealMenu.AddItem(new MenuItem("ksE", "E KS", true));
-                    {
-                        miscMenu.AddSubMenu(killStealMenu);
-                    }
-                    champMenu.AddSubMenu(miscMenu);
-                }
-                var drawMenu = new Menu("Draw", "Draw");
-                { 
-                    drawMenu.AddItem(new MenuItem("drawE", "Draw E", true));
-                    drawMenu.AddItem(new MenuItem("drawR", "Draw R", true));
-                }
-                champMenu.AddSubMenu(drawMenu);
-            }
+            var tsMenu = new Menu("Target Selector", "Target Selector");
+            TargetSelector.AddToMenu(tsMenu);
+            Menu.AddSubMenu(tsMenu);
 
-            champMenu.AddToMainMenu();
+            Menu.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
+            Orbwalker = new Orbwalking.Orbwalker(Menu.SubMenu("Orbwalking"));
+
+            Menu.AddSubMenu(new Menu("Combo", "Combo"));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("comboQ", "Use Q in Combo?").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("comboW", "Use W in combo?").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("comboE", "Use E in combo?").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("comboR", "Use R in combo?").SetValue(true));
+            Menu.SubMenu("Combo").AddItem(new MenuItem("Use Ignite", "Use Ignite in combo?").SetValue(true));
+
+            Menu.AddSubMenu(new Menu("Harass", "Harass"));
+            Menu.SubMenu("Harass").AddItem(new MenuItem("Use Q", "Use Q in harass?").SetValue(true));
+            Menu.SubMenu("Harass").AddItem(new MenuItem("Use W", "Use W in harass?").SetValue(true));
+            Menu.SubMenu("Harass").AddItem(new MenuItem("Use E", "Use E in harass?").SetValue(true));
+            Menu.SubMenu("Harass").AddItem(new MenuItem("Use R", "Use R in harass?").SetValue(true));
+            Menu.SubMenu("Harass").AddItem(new MenuItem("Mana Manager", "Harass MM").SetValue(new Slider(50, 1, 100)));
+
+            Menu.AddSubMenu(new Menu("Lane Clear", "Lane Clear"));
+            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("Use Q", "Use Q in lane clear?").SetValue(true));
+            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("Use W", "Use W in lane clear?").SetValue(true));
+            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("Use E", "Use E in lane clear?").SetValue(true));
+            Menu.SubMenu("Lane Clear").AddItem(new MenuItem("Use R", "Use R in lane clear?").SetValue(true));
+            Menu.SubMenu("Lane Clear")
+                .AddItem(new MenuItem("Mana Manager", "Lane Clear MM").SetValue(new Slider(50, 1, 100)));
+
+            Menu.AddSubMenu(new Menu("Last Hit", "Last Hit"));
+            Menu.SubMenu("Last Hit").AddItem(new MenuItem("Use Q", "Use Q in last hit?").SetValue(true));
+            Menu.SubMenu("Last Hit").AddItem(new MenuItem("Use W", "Use W in last hit?").SetValue(true));
+            Menu.SubMenu("Last Hit").AddItem(new MenuItem("Use E", "Use E in last hit?").SetValue(true));
+            Menu.SubMenu("Last Hit")
+                .AddItem(new MenuItem("Mana Manager", "Last Hit MM").SetValue(new Slider(50, 1, 100)));
+
+            Menu.SubMenu("Last Hit")
+                .AddItem(
+                    new MenuItem("Last Hit Key", "Last Hit Key Binding").SetValue(
+                        new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
+            Menu.SubMenu("Last Hit")
+                .AddItem(
+                    new MenuItem("Q Last Hit Toggle", "Last Hit Q Toggle").SetValue(
+                        new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
+
+            Menu.AddSubMenu(new Menu("Jungle Clear", "Jungle Clear"));
+            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("Use Q", "Use Q in jungle clear?").SetValue(true));
+            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("Use W", "Use W in jungle clear?").SetValue(true));
+            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("Use E", "Use E in jungle clear?").SetValue(true));
+            Menu.SubMenu("Jungle Clear").AddItem(new MenuItem("Use R", "Use R in jungle clear?").SetValue(true));
+            Menu.SubMenu("Jungle Clear")
+                .AddItem(new MenuItem("Mana Manager", "Jungle Clear MM").SetValue(new Slider(50, 1, 100)));
+
+            Menu.AddSubMenu(new Menu("Kill Steal", "Kill Steal"));
+            Menu.SubMenu("Kill Steal").AddItem(new MenuItem("Use Q", "Use Q for kill steal?").SetValue(true));
+            Menu.SubMenu("Kill Steal").AddItem(new MenuItem("Use W", "Use W for kill steal?").SetValue(true));
+            Menu.SubMenu("Kill Steal").AddItem(new MenuItem("Use E", "Use E for kill steal?").SetValue(true));
+            Menu.SubMenu("Kill Steal").AddItem(new MenuItem("Use Ignite", "Use Ignite for kill steal?").SetValue(true));
+
+            Menu.AddSubMenu(new Menu("Misc", "Misc"));
+            Menu.SubMenu("Misc")
+                .AddItem(
+                    new MenuItem("Use Ignite", "Use Ignite in misc?").SetValue(
+                        new StringList(new[] { "Combo", "Kill Steal" })));
+            Menu.SubMenu("Misc").AddItem(new MenuItem("Use R first?", "Use R first?").SetValue(true));
+            Menu.SubMenu("Misc").AddItem(new MenuItem("W on Gap Closer", "Use W on Gap Closer?").SetValue(true));
+
+            Menu.AddSubMenu(new Menu("Drawings", "Drawings"));
+            Menu.SubMenu("Drawings").AddItem(new MenuItem("Draw Q", "Draw Q?").SetValue(true));
+            Menu.SubMenu("Drawings").AddItem(new MenuItem("Draw W", "Draw W?").SetValue(true));
+            Menu.SubMenu("Drawings").AddItem(new MenuItem("drawE", "Draw E?").SetValue(true));
+
             Menu.AddToMainMenu();
 
-            Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnGameUpdate;
+
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
+
+            Drawing.OnDraw += Drawing_OnDraw;
+
         }
 
         private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser) {}
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
-            KillSteal();
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
-                    Combo();
-                    break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
-                    //LaneClear
+                    Combo(TargetSelector.GetTarget(1200f, TargetSelector.DamageType.Magical));
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
-                    Harass();
+                    Harass(TargetSelector.GetTarget(1200f, TargetSelector.DamageType.Magical));
+                    break;
+                case Orbwalking.OrbwalkingMode.LaneClear:
+                    //LaneClear();
+                    //JungleClear();
                     break;
             }
+            //LastHit();
+
+            var ksTarget =
+                ObjectManager.Get<Obj_AI_Hero>().Where(t => t.IsValidTarget()).OrderBy(t => t.Health).FirstOrDefault();
+            if (ksTarget != null)
+                KillSteal(ksTarget);
         }
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (Menu.Item("drawE").GetValue<bool>())
+            if (Menu.Item("Draw Q").GetValue<bool>())
             {
-                Drawing.DrawCircle(ObjectManager.Player.Position, E.Range, Color.Green);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, Q.Range, System.Drawing.Color.Green);
             }
-            if (Menu.Item("drawR").GetValue<bool>())
+            if (Menu.Item("Draw W").GetValue<bool>())
             {
-                Drawing.DrawCircle(ObjectManager.Player.Position, R.Range, Color.Green);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, W.Range, System.Drawing.Color.Red);
             }
-            // draw handler
+            if (Menu.Item("Draw E").GetValue<bool>())
+            {
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, E.Range, System.Drawing.Color.Blue);
+            }
         }
 
-        private static void Harass()
+        private static void Harass(Obj_AI_Hero target)
         {
-            var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Magical);
 
             if (Menu.Item("harassQ").GetValue<bool>() && Q.IsReady() &&
-                target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target) &&
-                (ObjectManager.Player.ManaPercentage() > Menu.Item("manaH").GetValue<Slider>().Value))
+                target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target)) //&&
+                //(ObjectManager.Player.ManaPercentage() > Menu.Item("manaH").GetValue<Slider>().Value))
             {
                 Q.Cast();
             }
         }
 
-        private static void Combo()
+        private static void Combo(Obj_AI_Hero target)
         {
-            var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Magical);
 
             if (Menu.Item("comboQ").GetValue<bool>() && Q.IsReady() &&
                 target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target))
@@ -181,10 +201,9 @@ namespace Poppy
                 }
                 var priority = 0;
                 Obj_AI_Hero selectedUnit = null;
-                foreach (
-                    var enemy in
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(hero => hero.IsEnemy && R.IsInRange(hero) && hero.IsValidTarget()))
+                foreach (var enemy in
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(hero => hero.IsEnemy && R.IsInRange(hero) && hero.IsValidTarget()))
                 {
                     if (Menu.Item(enemy.ChampionName + "prior").GetValue<Slider>().Value > priority)
                     {
@@ -204,18 +223,43 @@ namespace Poppy
             }
         }
 
-        private static void KillSteal()
+        private static void LastHit()
         {
-            var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Magical);
+            var keyActive = Menu.Item("Last Hit Key Binding").GetValue<KeyBind>().Active;
+            if (!keyActive)
+                return;
 
-            if (Menu.Item("ksQ").GetValue<bool>() && Q.IsReady() && Q.IsKillable(target))
-            {
-                Q.Cast(target);
-            }
+            var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
 
-            if (Menu.Item("ksE").GetValue<bool>() && E.IsReady() && E.IsKillable(target))
+            if (Menu.Item("Use Q").GetValue<bool>() && Q.IsReady() &&
+                Menu.Item("Last Hit Q Toggle").GetValue<KeyBind>().Active)
             {
-                E.Cast(target);
+                foreach (
+                    var minion in
+                        allMinions.Where(
+                            minion => minion.Health <= ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q)))
+                {
+                    if (minion.IsValidTarget())
+                    {
+                        Q.Cast();
+                    }
+                }
+        }
+    }
+
+    private static void KillSteal(Obj_AI_Hero Target)
+        {
+            var Champions = ObjectManager.Get<Obj_AI_Hero>();
+            if (Menu.Item("ksQ").GetValue<bool>() && Q.IsReady())
+            {
+                foreach (var champ in Champions.Where(champ => champ.Health <= ObjectManager.Player.GetSpellDamage(champ, SpellSlot.Q)))
+                {
+                    if (champ.IsValidTarget())
+                    {
+                        Q.CastOnUnit(champ);
+                    }
+                }
+
             }
         }
 
