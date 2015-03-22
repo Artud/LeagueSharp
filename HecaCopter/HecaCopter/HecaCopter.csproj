@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{173C270F-88B7-40BC-8F23-56FA01EA73B1}</ProjectGuid>
+    <ProjectGuid>{1A1D56C0-7C12-4C08-80D2-DA2C3A7F747C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HecaCopter2</RootNamespace>
