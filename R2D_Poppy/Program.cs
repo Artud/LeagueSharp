@@ -230,7 +230,7 @@ namespace Poppy
             }
         }
 
-        static void LaneClear()
+        private static void LaneClear()
         {
             var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
 
