@@ -6,11 +6,11 @@ using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
 
-namespace HecaCopter
+namespace HecaCopter2
 {
     internal class Program
     {
-        private const string Champion = "Volibear";
+        private const string Champion = "Hecarim";
         private static Orbwalking.Orbwalker _orbwalker;
         private static Spell _q;
         private static Spell _w;
@@ -62,13 +62,17 @@ namespace HecaCopter
             _config.AddSubMenu(new Menu("Combo", "Combo"));
             _config.SubMenu("Combo").AddItem(new MenuItem("comboQ", "Use Q")).SetValue(true);
             _config.SubMenu("Combo").AddItem(new MenuItem("comboW", "Use W")).SetValue(true);
-            _config.SubMenu("Combo").AddItem(new MenuItem("countW", "Min Enemies for W use").SetValue(new Slider(3, 1, 5)));
-            _config.SubMenu("Combo").AddItem(new MenuItem("healthPercentWCombo", "Min HP for W use").SetValue(new Slider(75, 1, 100)));
+            _config.SubMenu("Combo")
+                .AddItem(new MenuItem("countW", "Min Enemies for W use").SetValue(new Slider(3, 1, 5)));
+            _config.SubMenu("Combo")
+                .AddItem(new MenuItem("healthPercentWCombo", "Min HP for W use").SetValue(new Slider(75, 1, 100)));
             _config.SubMenu("Combo").AddItem(new MenuItem("comboE", "Use E")).SetValue(true);
             _config.SubMenu("Combo").AddItem(new MenuItem("comboR", "Use R in TF")).SetValue(true);
-            _config.SubMenu("Combo").AddItem(new MenuItem("countR", "Min enemies to ult in TF").SetValue(new Slider(3, 1, 5)));
+            _config.SubMenu("Combo")
+                .AddItem(new MenuItem("countR", "Min enemies to ult in TF").SetValue(new Slider(3, 1, 5)));
             _config.SubMenu("Combo").AddItem(new MenuItem("comboRGanks", "Use R in Ganks")).SetValue(true);
-            _config.SubMenu("Combo").AddItem(new MenuItem("countRGanks", "Min enemies to ult in Ganks").SetValue(new Slider(1, 1, 5)));
+            _config.SubMenu("Combo")
+                .AddItem(new MenuItem("countRGanks", "Min enemies to ult in Ganks").SetValue(new Slider(1, 1, 5)));
             _config.SubMenu("Combo")
                 .AddItem(new MenuItem("ActiveCombo", "Combo!").SetValue(new KeyBind(32, KeyBindType.Press)));
 
@@ -92,7 +96,8 @@ namespace HecaCopter
             _config.SubMenu("Jungle Clear")
                 .AddItem(new MenuItem("jungleClearMM", "Mana Manager").SetValue(new Slider(50, 1)));
             _config.SubMenu("Lane Clear")
-                .AddItem(new MenuItem("healthPercentWJungle", "Health percent to use W").SetValue(new Slider(45, 1, 100)));
+                .AddItem(
+                    new MenuItem("healthPercentWJungle", "Health percent to use W").SetValue(new Slider(45, 1, 100)));
 
             //Killsteal
             _config.AddSubMenu(new Menu("Kill Steal", "Kill Steal"));
@@ -126,7 +131,7 @@ namespace HecaCopter
                 "<font color='#FFFFFFF'> HecaCopter By</font> <font color='#0000FF'>Artud and imsosharp</font>");
         }
 
-        private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser) { }
+        private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser) {}
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
@@ -145,18 +150,21 @@ namespace HecaCopter
 
         private static void Combo()
         {
-            var nearbyEnemies = HeroManager.Enemies.Where(h => h.IsValidTarget() && h.Distance(_player) < 1000).OrderBy(h => h.Distance(_player));
+            var nearbyEnemies =
+                HeroManager.Enemies.Where(h => h.IsValidTarget() && h.Distance(_player) < 1000)
+                    .OrderBy(h => h.Distance(_player));
             var QTarget = TargetSelector.GetTarget(_q.Range, TargetSelector.DamageType.Physical);
             var RTarget = TargetSelector.GetTarget(_r.Range, TargetSelector.DamageType.Magical);
-            if (!nearbyEnemies.Any() || QTarget == null)
+            if (!nearbyEnemies.Any())
                 return;
-            if (_config.Item("comboQ").GetValue<bool>() && _q.IsReady())
+            if (_config.Item("comboQ").GetValue<bool>() && _q.IsReady() && QTarget.IsValidTarget())
             {
-                _q.CastIfWillHit(QTarget);
+                _q.Cast();
             }
             if (_config.Item("comboE").GetValue<bool>() && _e.IsReady())
             {
-                if (!QTarget.IsFacing(_player) && _player.Distance(QTarget) > _q.Range) //you ain't running away bitch :^) xd 
+                if (!QTarget.IsFacing(_player) && _player.Distance(QTarget) > _q.Range)
+                    //you ain't running away bitch :^) xd 
                 {
                     _e.Cast();
                 }
@@ -189,7 +197,8 @@ namespace HecaCopter
         {
             var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, _q.Range);
 
-            if (_player.ManaPercentage() > _config.Item("laneClearMM").GetValue<Slider>().Value || _config.Item("urfMode").GetValue<bool>())
+            if (_player.ManaPercentage() > _config.Item("laneClearMM").GetValue<Slider>().Value ||
+                _config.Item("urfMode").GetValue<bool>())
             {
                 if (_config.Item("laneQ").GetValue<bool>() && _q.IsReady())
                 {
@@ -197,24 +206,27 @@ namespace HecaCopter
                     {
                         if (minion.IsValidTarget())
                         {
-                            _q.CastIfWillHit(minion, _config.Item("minLaneQ").GetValue<Slider>().Value);
+                            if (allMinions.Count > _config.Item("minLaneQ").GetValue<Slider>().Value)
+                            {
+                                _q.Cast();
+                            }
                         }
                     }
                 }
-                if (_config.Item("laneW").GetValue<bool>() && 
-                    _player.HealthPercentage() <= _config.Item("healthPercentW").GetValue<Slider>().Value && _w.IsReady())
-                {
-                    _w.Cast();
-                }
+            }
+            if (_config.Item("laneW").GetValue<bool>() &&
+                _player.HealthPercentage() <= _config.Item("healthPercentW").GetValue<Slider>().Value && _w.IsReady())
+            {
+                _w.Cast();
             }
         }
 
-        private static void JungleClear()
+private static void JungleClear()
         {
             var jungleMobs = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 500, MinionTypes.All, MinionTeam.Neutral).OrderBy(m => m.MaxHealth);
-            if (_config.Item("jungleQ").GetValue<bool>() && _q.IsReady())
+            if (_config.Item("jungleQ").GetValue<bool>() && _q.IsReady() && jungleMobs.FirstOrDefault().IsValidTarget())
             {
-                _q.CastIfWillHit(jungleMobs.FirstOrDefault()); 
+                _q.Cast();
             }
             if (_config.Item("jungleClearMM").GetValue<Slider>().Value >= _player.ManaPercentage())
             {
