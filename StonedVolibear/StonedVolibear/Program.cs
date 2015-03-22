@@ -11,10 +11,10 @@ namespace StonedVolibear
     {
         private const string Champion = "Volibear";
         private static Orbwalking.Orbwalker _orbwalker;
-        private static Spell Q;
-        private static Spell W;
-        private static Spell E;
-        private static Spell R;
+        private static Spell _q;
+        private static Spell _w;
+        private static Spell _e;
+        private static Spell _r;
         private static Menu _config;
         private static Items.Item RDO;
         private static Items.Item DFG;
@@ -37,10 +37,10 @@ namespace StonedVolibear
                 return;
             }
 
-            Q = new Spell(SpellSlot.Q, 600);
-            W = new Spell(SpellSlot.W, 405);
-            E = new Spell(SpellSlot.E, 400);
-            R = new Spell(SpellSlot.R, 125);
+            _q = new Spell(SpellSlot.Q, 600);
+            _w = new Spell(SpellSlot.W, 405);
+            _e = new Spell(SpellSlot.E, 400);
+            _r = new Spell(SpellSlot.R, 125);
 
 
             RDO = new Items.Item(3143, 490f);
@@ -99,6 +99,13 @@ namespace StonedVolibear
             _config.SubMenu("Jungle Clear")
                 .AddItem(new MenuItem("Jungle Clear MM", "Mana Manager").SetValue(new Slider(50, 1)));
 
+            //Killsteal
+            _config.AddSubMenu(new Menu("Kill Steal", "Kill Steal"));
+            _config.SubMenu("Kill Steal").AddItem(new MenuItem("ksW", "Use Q for kill steal?").SetValue(true));
+            _config.SubMenu("Kill Steal").AddItem(new MenuItem("ksE", "Use E for kill steal?").SetValue(true));
+            _config.SubMenu("Kill Steal")
+                .AddItem(new MenuItem("Use Ignite", "Use Ignite for kill steal?").SetValue(true));
+
             //Drawings
             _config.AddSubMenu(new Menu("Drawings", "Drawings"));
             _config.SubMenu("Drawings").AddItem(new MenuItem("DrawWE", "Draw W and E")).SetValue(true);
@@ -138,32 +145,33 @@ namespace StonedVolibear
                     JungleClear();
                     break;
             }
+            KillSteal();
         }
 
         private static void LaneClear()
         {
-            var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
+            var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, _q.Range);
 
             if (_player.ManaPercentage() > _config.Item("Lane Clear MM").GetValue<Slider>().Value)
             {
-                if (_config.Item("laneW").GetValue<bool>() && Q.IsReady())
+                if (_config.Item("laneW").GetValue<bool>() && _q.IsReady())
                 {
                     foreach (var minion in allMinions)
                     {
                         if (minion.IsValidTarget())
                         {
-                            W.CastOnUnit(minion);
+                            _w.CastOnUnit(minion);
                         }
                     }
                 }
 
-                if (_config.Item("laneE").GetValue<bool>() && E.IsReady())
+                if (_config.Item("laneE").GetValue<bool>() && _e.IsReady())
                 {
                     foreach (var minion in allMinions)
                     {
                         if (minion.IsValidTarget())
                         {
-                            E.Cast();
+                            _e.Cast();
                         }
                     }
                 }
@@ -173,39 +181,39 @@ namespace StonedVolibear
         private static void JungleClear()
         {
             var allMinions = MinionManager.GetMinions(
-                ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral,
+                ObjectManager.Player.ServerPosition, _q.Range, MinionTypes.All, MinionTeam.Neutral,
                 MinionOrderTypes.MaxHealth);
 
             if (_player.ManaPercentage() > _config.Item("Jungle Clear MM").GetValue<Slider>().Value)
             {
-                if (_config.Item("jungleQ").GetValue<bool>() && Q.IsReady())
+                if (_config.Item("jungleQ").GetValue<bool>() && _q.IsReady())
                 {
                     foreach (var minion in allMinions)
                     {
                         if (minion.IsValidTarget())
                         {
-                            Q.Cast();
+                            _q.Cast();
                         }
                     }
                 }
 
-                if (_config.Item("jungleW").GetValue<bool>() && W.IsReady())
+                if (_config.Item("jungleW").GetValue<bool>() && _w.IsReady())
                 {
                     foreach (var minion in allMinions)
                     {
                         if (minion.IsValidTarget())
                         {
-                            W.CastOnUnit(minion);
+                            _w.CastOnUnit(minion);
                         }
                     }
                 }
-                if (_config.Item("jungleE").GetValue<bool>() && E.IsReady())
+                if (_config.Item("jungleE").GetValue<bool>() && _e.IsReady())
                 {
                     foreach (var minion in allMinions)
                     {
                         if (minion.IsValidTarget())
                         {
-                            E.Cast();
+                            _e.Cast();
                         }
                     }
                 }
@@ -219,9 +227,9 @@ namespace StonedVolibear
                 return;
             }
 
-            if (_config.Item("HarassE").GetValue<bool>() && _player.Distance(target) <= E.Range && E.IsReady())
+            if (_config.Item("HarassE").GetValue<bool>() && _player.Distance(target) <= _e.Range && _e.IsReady())
             {
-                E.Cast();
+                _e.Cast();
             }
         }
 
@@ -233,13 +241,13 @@ namespace StonedVolibear
             }
 
             //Combo
-            if (_player.Distance(target) <= Q.Range && Q.IsReady() && (_config.Item("UseQCombo").GetValue<bool>()))
+            if (_player.Distance(target) <= _q.Range && _q.IsReady() && (_config.Item("UseQCombo").GetValue<bool>()))
             {
-                Q.Cast();
+                _q.Cast();
             }
-            if (_player.Distance(target) <= E.Range && E.IsReady() && (_config.Item("UseECombo").GetValue<bool>()))
+            if (_player.Distance(target) <= _e.Range && _e.IsReady() && (_config.Item("UseECombo").GetValue<bool>()))
             {
-                E.Cast();
+                _e.Cast();
             }
             //WLogic
             var health = target.Health;
@@ -247,15 +255,15 @@ namespace StonedVolibear
             float wcount = _config.Item("CountW").GetValue<Slider>().Value;
             if (health < ((maxhealth * wcount) / 100))
             {
-                if (_config.Item("UseWCombo").GetValue<bool>() && W.IsReady())
+                if (_config.Item("UseWCombo").GetValue<bool>() && _w.IsReady())
                 {
-                    W.Cast(target);
+                    _w.Cast(target);
                 }
             }
-            if (_config.Item("AutoR").GetValue<bool>() && R.IsReady() &&
+            if (_config.Item("AutoR").GetValue<bool>() && _r.IsReady() &&
                 (GetNumberHitByR(target) >= _config.Item("CountR").GetValue<Slider>().Value))
             {
-                R.Cast();
+                _r.Cast();
             }
             if (_config.Item("UseItems").GetValue<bool>())
             {
@@ -286,6 +294,29 @@ namespace StonedVolibear
             }
         }
 
+        private static void KillSteal()
+        {
+            var kSableW =
+                HeroManager.Enemies.FindAll(
+                    champ =>
+                        champ.IsValidTarget() &&
+                        (champ.Health <= ObjectManager.Player.GetSpellDamage(champ, SpellSlot.W)));
+            if (kSableW.Any())
+            {
+                _w.CastOnUnit(kSableW.FirstOrDefault());
+            }
+            var kSableE =
+                HeroManager.Enemies.FindAll(
+                    champ =>
+                        champ.IsValidTarget() &&
+                        (champ.Health <= ObjectManager.Player.GetSpellDamage(champ, SpellSlot.E)) &&
+                        champ.Distance(ObjectManager.Player) < _e.Range);
+            if (kSableE.Any())
+            {
+                _e.Cast(kSableE.FirstOrDefault());
+            }
+        }
+
         private static int GetNumberHitByR(Obj_AI_Base target)
         {
             return
@@ -293,14 +324,14 @@ namespace StonedVolibear
                     .Count(
                         current =>
                             current.IsEnemy &&
-                            Vector3.Distance(_player.ServerPosition, current.ServerPosition) <= R.Range);
+                            Vector3.Distance(_player.ServerPosition, current.ServerPosition) <= _r.Range);
         }
 
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (_config.Item("DrawWE").GetValue<bool>())
             {
-                Render.Circle.DrawCircle(ObjectManager.Player.Position, E.Range, Color.Blue);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, _e.Range, Color.Blue);
             }
         }
     }
