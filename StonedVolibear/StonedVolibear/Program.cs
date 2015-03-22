@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
-using Color = System.Drawing.Color;
 
 namespace StonedVolibear
 {
@@ -259,8 +258,9 @@ namespace StonedVolibear
                     _w.Cast(target);
                 }
             }
-            if (_config.Item("AutoR").GetValue<bool>() && _r.IsReady() &&
-                (BeforeAttack(Orbwalking.BeforeAttackEventArgs args)))
+            if (_config.Item("AutoR").GetValue<bool>() && _r.IsReady() && (BeforeAttack(
+                Orbwalking.BeforeAttackEventArgs
+            args)))
             {
                 _r.Cast();
             }
@@ -316,29 +316,18 @@ namespace StonedVolibear
             }
         }
 
-
-       /* private static int GetNumberHitByR(Obj_AI_Base target)
-        {
-            return
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Count(
-                        current =>
-                            current.IsEnemy &&
-                            Vector3.Distance(_player.ServerPosition, current.ServerPosition) <= _r.Range);
-        }*/
-
         private static void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
-            if (args.Target.IsEnemy && args.Target.IsValid<Obj_AI_Hero>() &&
+            if (_config.Item("AutoR").GetValue<bool>() && _r.IsReady() && args.Target.IsEnemy &&
+                args.Target.IsValid<Obj_AI_Hero>() &&
                 args.Unit.CountEnemiesInRange(300) >= _config.Item("CountR").GetValue<Slider>().Value)
-            
+
             {
                 _r.Cast();
             }
         }
-   
 
-    private static void Drawing_OnDraw(EventArgs args)
+        private static void Drawing_OnDraw(EventArgs args)
         {
             if (_config.Item("DrawWE").GetValue<bool>())
             {
