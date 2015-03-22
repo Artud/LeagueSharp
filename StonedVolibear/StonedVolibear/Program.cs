@@ -10,31 +10,18 @@ namespace StonedVolibear
     internal class Program
     {
         private const string Champion = "Volibear";
-
         private static Orbwalking.Orbwalker _orbwalker;
-
         private static Spell Q;
-
         private static Spell W;
-
         private static Spell E;
-
         private static Spell R;
-
         private static Menu _config;
-
         private static Items.Item RDO;
-
         private static Items.Item DFG;
-
         private static Items.Item YOY;
-
         private static Items.Item BOTK;
-
         private static Items.Item HYD;
-
         private static Items.Item CUT;
-
         private static Obj_AI_Hero _player;
 
         private static void Main(string[] args)
@@ -224,7 +211,6 @@ namespace StonedVolibear
                 }
             }
         }
-
 
         private static void Harass(Obj_AI_Base target)
         {
