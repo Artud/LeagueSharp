@@ -10,3 +10,6 @@ c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCop
 c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\obj\Debug\HecaCopter.csprojResolveAssemblyReference.cache
 c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\obj\Debug\HecaCopter.exe
 c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\obj\Debug\HecaCopter.pdb
+C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\HecaCopter.exe.config
+C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\obj\Debug\HecaCopter.exe
+C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\obj\Debug\HecaCopter.pdb
