@@ -118,10 +118,9 @@ namespace StonedVolibear
             _config.AddToMainMenu();
 
             Game.OnUpdate += Game_OnGameUpdate;
-
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
-
             Drawing.OnDraw += Drawing_OnDraw;
+            Orbwalking.BeforeAttack += BeforeAttack;
 
 
             Game.PrintChat(
@@ -261,7 +260,7 @@ namespace StonedVolibear
                 }
             }
             if (_config.Item("AutoR").GetValue<bool>() && _r.IsReady() &&
-                (GetNumberHitByR(target) >= _config.Item("CountR").GetValue<Slider>().Value))
+                (BeforeAttack(Orbwalking.BeforeAttackEventArgs args)))
             {
                 _r.Cast();
             }
@@ -317,7 +316,8 @@ namespace StonedVolibear
             }
         }
 
-        private static int GetNumberHitByR(Obj_AI_Base target)
+
+       /* private static int GetNumberHitByR(Obj_AI_Base target)
         {
             return
                 ObjectManager.Get<Obj_AI_Hero>()
@@ -325,9 +325,20 @@ namespace StonedVolibear
                         current =>
                             current.IsEnemy &&
                             Vector3.Distance(_player.ServerPosition, current.ServerPosition) <= _r.Range);
-        }
+        }*/
 
-        private static void Drawing_OnDraw(EventArgs args)
+        private static void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        {
+            if (args.Target.IsEnemy && args.Target.IsValid<Obj_AI_Hero>() &&
+                args.Unit.CountEnemiesInRange(300) >= _config.Item("CountR").GetValue<Slider>().Value)
+            
+            {
+                _r.Cast();
+            }
+        }
+   
+
+    private static void Drawing_OnDraw(EventArgs args)
         {
             if (_config.Item("DrawWE").GetValue<bool>())
             {
