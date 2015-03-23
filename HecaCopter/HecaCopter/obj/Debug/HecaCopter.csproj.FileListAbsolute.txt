@@ -1,25 +1,3 @@
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\bin\Debug\HecaCopter.exe.config
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\bin\Debug\HecaCopter.exe
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\bin\Debug\HecaCopter.pdb
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\bin\Debug\LeagueSharp.Common.dll
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\bin\Debug\LeagueSharp.dll
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\bin\Debug\SharpDX.dll
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\bin\Debug\SharpDX.Direct3D9.dll
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\bin\Debug\clipper_library.dll
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\bin\Debug\LeagueSharp.xml
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\obj\Debug\HecaCopter.csprojResolveAssemblyReference.cache
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\obj\Debug\HecaCopter.exe
-c:\users\felipe navarro\documents\visual studio 2013\Projects\HecaCopter\HecaCopter\obj\Debug\HecaCopter.pdb
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\HecaCopter.exe.config
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\HecaCopter.exe
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\HecaCopter.pdb
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\LeagueSharp.Common.dll
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\LeagueSharp.dll
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\SharpDX.dll
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\SharpDX.Direct3D9.dll
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\clipper_library.dll
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Debug\LeagueSharp.xml
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\obj\Debug\HecaCopter.csprojResolveAssemblyReference.cache
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Release\HecaCopter2.exe.config
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Release\HecaCopter2.exe
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Release\HecaCopter2.pdb
@@ -29,5 +7,6 @@ C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Relea
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Release\SharpDX.Direct3D9.dll
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Release\clipper_library.dll
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Release\LeagueSharp.xml
+C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\obj\Debug\HecaCopter.csprojResolveAssemblyReference.cache
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\obj\Debug\HecaCopter2.exe
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\obj\Debug\HecaCopter2.pdb

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Specialized;
+using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
-using Color = System.Drawing.Color;
 
 namespace HecaCopter2
 {
@@ -43,7 +41,6 @@ namespace HecaCopter2
             _e = new Spell(SpellSlot.E, 0);
             _r = new Spell(SpellSlot.R, 1000);
             _r.SetSkillshot(0.5f, 200f, 1200f, false, SkillshotType.SkillshotLine);
-
 
 
             //Menu Hecarim
@@ -156,18 +153,16 @@ namespace HecaCopter2
             var QTarget = TargetSelector.GetTarget(_q.Range, TargetSelector.DamageType.Physical);
             var RTarget = TargetSelector.GetTarget(_r.Range, TargetSelector.DamageType.Magical);
             if (!nearbyEnemies.Any())
+            {
                 return;
+            }
             if (_config.Item("comboQ").GetValue<bool>() && _q.IsReady() && QTarget.IsValidTarget())
             {
                 _q.Cast();
             }
             if (_config.Item("comboE").GetValue<bool>() && _e.IsReady())
             {
-                if (!QTarget.IsFacing(_player) && _player.Distance(QTarget) > _q.Range)
-                    //you ain't running away bitch :^) xd 
-                {
-                    _e.Cast();
-                }
+                _e.Cast();
             }
             if (_config.Item("comboW").GetValue<bool>() && _w.IsReady())
             {
@@ -182,7 +177,9 @@ namespace HecaCopter2
                 if (_player.CountAlliesInRange(1000) <= 2)
                 {
                     if (nearbyEnemies.FirstOrDefault().Distance(_player) < _q.Range)
+                    {
                         return;
+                    }
                     _r.CastIfWillHit(RTarget, _config.Item("countRGanks").GetValue<Slider>().Value);
                 }
                 else
@@ -190,7 +187,6 @@ namespace HecaCopter2
                     _r.CastIfWillHit(RTarget, _config.Item("countR").GetValue<Slider>().Value);
                 }
             }
-
         }
 
         private static void LaneClear()
@@ -221,9 +217,11 @@ namespace HecaCopter2
             }
         }
 
-private static void JungleClear()
+        private static void JungleClear()
         {
-            var jungleMobs = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 500, MinionTypes.All, MinionTeam.Neutral).OrderBy(m => m.MaxHealth);
+            var jungleMobs =
+                MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 500, MinionTypes.All, MinionTeam.Neutral)
+                    .OrderBy(m => m.MaxHealth);
             if (_config.Item("jungleQ").GetValue<bool>() && _q.IsReady() && jungleMobs.FirstOrDefault().IsValidTarget())
             {
                 _q.Cast();
@@ -234,12 +232,12 @@ private static void JungleClear()
                 {
                     _e.Cast();
                 }
-                if (_config.Item("healthPercentWJungle").GetValue<Slider>().Value <= _player.HealthPercentage() && _w.IsReady() && _config.Item("jungleW").GetValue<bool>())
+                if (_config.Item("healthPercentWJungle").GetValue<Slider>().Value <= _player.HealthPercentage() &&
+                    _w.IsReady() && _config.Item("jungleW").GetValue<bool>())
                 {
                     _w.Cast();
                 }
             }
-
         }
 
         private static void Drawing_OnDraw(EventArgs args)
