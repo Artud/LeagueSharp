@@ -257,12 +257,8 @@ namespace StonedVolibear
                 {
                     _w.Cast(target);
                 }
-            }
-            if (_config.Item("AutoR").GetValue<bool>() && _r.IsReady() && (BeforeAttack(
-                Orbwalking.BeforeAttackEventArgs
-            args)))
-            {
-                _r.Cast();
+
+
             }
             if (_config.Item("UseItems").GetValue<bool>())
             {
