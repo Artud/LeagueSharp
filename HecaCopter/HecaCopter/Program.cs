@@ -92,7 +92,7 @@ namespace HecaCopter2
             _config.SubMenu("Jungle Clear").AddItem(new MenuItem("jungleE", "Use E to clear jg?").SetValue(true));
             _config.SubMenu("Jungle Clear")
                 .AddItem(new MenuItem("jungleClearMM", "Mana Manager").SetValue(new Slider(50, 1)));
-            _config.SubMenu("Lane Clear")
+            _config.SubMenu("Jungle Clear")
                 .AddItem(
                     new MenuItem("healthPercentWJungle", "Health percent to use W").SetValue(new Slider(45, 1, 100)));
 
@@ -228,7 +228,7 @@ namespace HecaCopter2
             }
             if (_config.Item("jungleClearMM").GetValue<Slider>().Value >= _player.ManaPercentage())
             {
-                if (_config.Item("jungleE").GetValue<bool>() && _e.IsReady())
+                if (_config.Item("jungleE").GetValue<bool>() && _e.IsReady() && jungleMobs.FirstOrDefault().IsValidTarget())
                 {
                     _e.Cast();
                 }
@@ -252,8 +252,8 @@ namespace HecaCopter2
 
         private static void KillSteal()
         {
-            var qkSable = HeroManager.Enemies.Where(h => h.IsValidTarget() && h.Health < _q.GetDamage(h));
-            var wkSable = HeroManager.Enemies.Where(h => h.IsValidTarget() && h.Health < _w.GetDamage(h));
+            var qkSable = HeroManager.Enemies.FindAll(h => h.IsValidTarget() && h.Health <= ObjectManager.Player.GetSpellDamage(h, SpellSlot.Q));
+            var wkSable = HeroManager.Enemies.FindAll(h => h.IsValidTarget() && h.Health <= ObjectManager.Player.GetSpellDamage(h, SpellSlot.W));
             if (qkSable.Any() && _config.Item("ksQ").GetValue<bool>())
             {
                 _q.Cast(qkSable.FirstOrDefault());
