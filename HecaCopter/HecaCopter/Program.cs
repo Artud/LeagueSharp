@@ -36,7 +36,7 @@ namespace HecaCopter2
                 return;
             }
 
-            _q = new Spell(SpellSlot.Q, 325);
+            _q = new Spell(SpellSlot.Q, 300);
             _w = new Spell(SpellSlot.W, 525);
             _e = new Spell(SpellSlot.E, 0);
             _r = new Spell(SpellSlot.R, 1000);
@@ -72,6 +72,11 @@ namespace HecaCopter2
                 .AddItem(new MenuItem("countRGanks", "Min enemies to ult in Ganks").SetValue(new Slider(1, 1, 5)));
             _config.SubMenu("Combo")
                 .AddItem(new MenuItem("ActiveCombo", "Combo!").SetValue(new KeyBind(32, KeyBindType.Press)));
+
+            //Harass 
+            _config.AddSubMenu(new Menu("Harass", "Harass"));
+            _config.SubMenu("Harass").AddItem(new MenuItem("harassQ", "Use Q to harass").SetValue(true));
+            _config.SubMenu("Harass").AddItem(new MenuItem("harassMM", "Mana Manager").SetValue(new Slider(45, 1, 100)));
 
             //Lane Clear
             _config.AddSubMenu(new Menu("Lane Clear", "Lane Clear"));
@@ -185,6 +190,18 @@ namespace HecaCopter2
                 else
                 {
                     _r.CastIfWillHit(RTarget, _config.Item("countR").GetValue<Slider>().Value);
+                }
+            }
+        }
+
+        private static void Harass()
+        {
+            var QTarget = TargetSelector.GetTarget(_q.Range, TargetSelector.DamageType.Physical);
+            if (_player.ManaPercentage() > _config.Item("harassMM").GetValue<Slider>().Value)
+            {
+                if (_config.Item("harassQ").GetValue<bool>() && _q.IsReady() && QTarget.IsValidTarget())
+                {
+                    _q.Cast();
                 }
             }
         }

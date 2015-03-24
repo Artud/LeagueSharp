@@ -7,6 +7,5 @@ C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Relea
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Release\SharpDX.Direct3D9.dll
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Release\clipper_library.dll
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\bin\Release\LeagueSharp.xml
-C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\obj\Debug\HecaCopter.csprojResolveAssemblyReference.cache
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\obj\Debug\HecaCopter2.exe
 C:\Users\felipe navarro\Source\Repos\LeagueSharp\HecaCopter\HecaCopter\obj\Debug\HecaCopter2.pdb
