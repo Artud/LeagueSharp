@@ -36,7 +36,7 @@ namespace HecaCopter2
                 return;
             }
 
-            _q = new Spell(SpellSlot.Q, 300);
+            _q = new Spell(SpellSlot.Q, 320);
             _w = new Spell(SpellSlot.W, 525);
             _e = new Spell(SpellSlot.E, 0);
             _r = new Spell(SpellSlot.R, 1000);
