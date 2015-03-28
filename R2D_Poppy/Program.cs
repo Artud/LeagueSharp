@@ -115,7 +115,7 @@ namespace Poppy
 
             Menu.AddToMainMenu();
 
-            Game.OnUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnUpdate;
 
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
 
@@ -126,7 +126,7 @@ namespace Poppy
 
         private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser) { }
 
-        private static void Game_OnGameUpdate(EventArgs args)
+        private static void Game_OnUpdate(EventArgs args)
         {
             switch (_orbwalker.ActiveMode)
             {
