@@ -3,8 +3,10 @@ using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-
+using SharpDX;
+using Color = System.Drawing.Color;;
 namespace StonedVolibear
+
 {
     internal class Program
     {
@@ -116,7 +118,7 @@ namespace StonedVolibear
 
             _config.AddToMainMenu();
 
-            Game.OnUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnUpdate;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
             Drawing.OnDraw += Drawing_OnDraw;
             Orbwalking.BeforeAttack += BeforeAttack;
@@ -128,7 +130,7 @@ namespace StonedVolibear
 
         private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser) {}
 
-        private static void Game_OnGameUpdate(EventArgs args)
+        private static void Game_OnUpdate(EventArgs args)
         {
             switch (_orbwalker.ActiveMode)
             {
@@ -257,8 +259,6 @@ namespace StonedVolibear
                 {
                     _w.Cast(target);
                 }
-
-
             }
             if (_config.Item("UseItems").GetValue<bool>())
             {
