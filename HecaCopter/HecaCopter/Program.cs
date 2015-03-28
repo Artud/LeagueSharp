@@ -123,7 +123,7 @@ namespace HecaCopter2
 
             _config.AddToMainMenu();
 
-            Game.OnUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnUpdate;
 
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
 
@@ -135,7 +135,7 @@ namespace HecaCopter2
 
         private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser) {}
 
-        private static void Game_OnGameUpdate(EventArgs args)
+        private static void Game_OnUpdate(EventArgs args)
         {
             switch (_orbwalker.ActiveMode)
             {
@@ -161,7 +161,7 @@ namespace HecaCopter2
             {
                 return;
             }
-            if (_config.Item("comboQ").GetValue<bool>() && _q.IsReady() && QTarget.IsValidTarget())
+            if (_config.Item("comboQ").GetValue <bool>() && _q.IsReady() && QTarget.IsValidTarget())
             {
                 _q.Cast();
             }
