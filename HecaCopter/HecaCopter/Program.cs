@@ -3,6 +3,8 @@ using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
+using Color = System.Drawing.Color;
 
 namespace HecaCopter2
 {
@@ -208,7 +210,7 @@ namespace HecaCopter2
 
         private static void LaneClear()
         {
-            var allMinions = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, _q.Range);
+            var allMinions = MinionManager.GetMinions(325);
 
             if (_player.ManaPercentage() > _config.Item("laneClearMM").GetValue<Slider>().Value ||
                 _config.Item("urfMode").GetValue<bool>())
@@ -237,7 +239,7 @@ namespace HecaCopter2
         private static void JungleClear()
         {
             var jungleMobs =
-                MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 500, MinionTypes.All, MinionTeam.Neutral)
+                MinionManager.GetMinions(325, MinionTypes.All, MinionTeam.Neutral)
                     .OrderBy(m => m.MaxHealth);
             if (_config.Item("jungleQ").GetValue<bool>() && _q.IsReady() && jungleMobs.FirstOrDefault().IsValidTarget())
             {
