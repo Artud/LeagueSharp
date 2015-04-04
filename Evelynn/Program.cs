@@ -73,7 +73,7 @@ namespace Evelynn
             Config.SubMenu("Combo").AddItem(new MenuItem("UseRCombo", "Use R").SetValue(true));
             Config.SubMenu("Combo")
                 .AddItem(
-                    new MenuItem("ComboActive", "Combo!").SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
+                    new MenuItem("ComboActive", "Combo!").SetValue(new KeyBind("32".ToCharArray()[0], KeyBindType.Press)));
 
             Config.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("UseQLaneClear", "Use Q").SetValue(true));
