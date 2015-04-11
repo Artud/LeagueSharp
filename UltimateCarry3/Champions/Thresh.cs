@@ -68,7 +68,12 @@ namespace UltimateCarry.Champions
             Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
             Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
 
-            Program.Menu.AddItem(new MenuItem("WQMouse" , "W and then Q to mouse").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
+            Program.Menu.AddSubMenu(new Menu("Flee", "Flee"));
+            Program.Menu.SubMenu("Flee").AddItem(new MenuItem("FleeQ", "Use Q").SetValue(true));
+            Program.Menu.SubMenu("Flee").AddItem(new MenuItem("Flee", "Flee").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
+
+
+            Program.Menu.AddItem(new MenuItem("WQMouse" , "W and then Q to mouse").SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
         }
         
 
@@ -250,32 +255,11 @@ namespace UltimateCarry.Champions
             }
             if (Program.Menu.Item("WQMouse").GetValue<KeyBind>().Active)
             {
-                try
-                {
-                    var target =
-                        (Obj_AI_Minion)
-                            MinionManager.GetMinions(
-                                ObjectManager.Player.Position, Q.Range, MinionTypes.All, MinionTeam.Neutral)
-                                .FirstOrDefault();
-                    if (target.IsValidTarget())
-                    {
-                        if (Q.Cast(target) == Spell.CastStates.SuccessfullyCasted)
-                        {
-                            Utility.DelayAction.Add(
-                                2000, () =>
-                                {
-                                    if (target.IsValidTarget() && target.HasBuff("ThreshQ"))
-                                    {
-                                        Q.Cast();
-                                    }
-                                });
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
+                QAway();
+            }
+            if (Program.Menu.Item("Flee").GetValue<KeyBind>().Active)
+            {
+                QAway();
             }
         }
 
@@ -368,6 +352,37 @@ namespace UltimateCarry.Champions
                     W.Cast(bestcastposition, Packets());
                 }
             }
+        }
+
+        private void QAway()
+        {
+            try
+                {
+                    var target =
+                        (Obj_AI_Minion)
+                            MinionManager.GetMinions(
+                                ObjectManager.Player.Position, Q.Range, MinionTypes.All, MinionTeam.Neutral)
+                                .FirstOrDefault();
+
+                    if (target.IsValidTarget())
+                    {
+                        if (Q.Cast(target) == Spell.CastStates.SuccessfullyCasted)
+                        {
+                            Utility.DelayAction.Add(
+                                2000, () =>
+                                {
+                                    if (target.IsValidTarget() && target.HasBuff("ThreshQ"))
+                                    {
+                                        Q.Cast();
+                                    }
+                                });
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
         }
 
         private void CastE(string mode = "")
