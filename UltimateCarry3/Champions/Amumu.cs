@@ -69,9 +69,9 @@ namespace UltimateCarry.Champions
             _spellQ.SetSkillshot(.25f, 90, 2000, true, SkillshotType.SkillshotLine); //check delay
             _spellW.SetSkillshot(0f, _spellW.Range, float.MaxValue, false, SkillshotType.SkillshotCircle); //correct
             _spellE.SetSkillshot(.5f, _spellE.Range, float.MaxValue, false, SkillshotType.SkillshotCircle);
-                //check delay
+            //check delay
             _spellR.SetSkillshot(.25f, _spellR.Range, float.MaxValue, false, SkillshotType.SkillshotCircle);
-                //check delay
+            //check delay
 
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnGameUpdate;
@@ -167,16 +167,15 @@ namespace UltimateCarry.Champions
                     var maxTargetsHit = 0;
                     Obj_AI_Base unitMostTargetsHit = null;
 
-                    foreach (
-                        var unit in
-                            ObjectManager.Get<Obj_AI_Base>()
-                                .Where(
-                                    x =>
-                                        x.IsValidTarget(_spellQ.Range) &&
-                                        _spellQ.GetPrediction(x).Hitchance >= HitChance.High)) //causes troubles?
+                    foreach (var unit in
+                        ObjectManager.Get<Obj_AI_Base>()
+                            .Where(
+                                x =>
+                                    x.IsValidTarget(_spellQ.Range) &&
+                                    _spellQ.GetPrediction(x).Hitchance >= HitChance.High)) //causes troubles?
                     {
                         var targetsHit = unit.CountEnemiesInRange((int) _spellR.Range);
-                            //unitposition might not reflect where you land with Q
+                        //unitposition might not reflect where you land with Q
 
                         if (targetsHit > maxTargetsHit ||
                             (unitMostTargetsHit != null && targetsHit >= maxTargetsHit &&

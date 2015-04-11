@@ -60,7 +60,7 @@ namespace UltimateCarry.Champions
         {
             Q = new Spell(SpellSlot.Q, 800);
             Q.SetSkillshot(0.8f, 60f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-                // small width for better hits
+            // small width for better hits
 
             W = new Spell(SpellSlot.W, 825);
 

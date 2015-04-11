@@ -48,7 +48,7 @@ namespace UltimateCarry.Champions
             drawMenu.AddItem(
                 new MenuItem("drawW", "Draw W range").SetValue(new Circle(false, Color.FromArgb(125, 0, 0, 255))));
             var dmgAfterComboItem = new MenuItem("DamageAfterCombo", "Draw Combo Damage").SetValue(true);
-                //copied from esk0r Syndra
+            //copied from esk0r Syndra
             drawMenu.AddItem(dmgAfterComboItem);
 
 
@@ -179,7 +179,7 @@ namespace UltimateCarry.Champions
             if (target != null)
             {
                 var predictedPos = Prediction.GetPrediction(target, _spellQ.Delay).UnitPosition;
-                    //correct pos currently not possible with spell acceleration
+                //correct pos currently not possible with spell acceleration
                 _spellQ.Speed = GetDynamicQSpeed(ObjectManager.Player.Distance(predictedPos));
                 _spellQ.CastIfHitchanceEquals(target, HitChance.High, Packets());
             }
@@ -300,7 +300,7 @@ namespace UltimateCarry.Champions
                 }
 
                 var friendsNearMouse = Program.Helper.OwnTeam.Where(x => x.IsMe || x.Distance(mousePos) < 650);
-                    //me and friends near mouse (already in fight)
+                //me and friends near mouse (already in fight)
 
                 if (enemiesNearMouse.Count() == 1) //x vs 1 enemy
                 {
@@ -309,10 +309,10 @@ namespace UltimateCarry.Champions
                     var underTower = enemy.UnderTurret();
 
                     return GetComboDamage(enemy) / enemy.Health >= (underTower ? 1.25f : 1);
-                        //if enemy under tower, only initiate if combo damage is >125% of enemy health
+                    //if enemy under tower, only initiate if combo damage is >125% of enemy health
                 }
                 var lowHealthEnemies = enemiesNearMouse.Count(x => x.Health / x.MaxHealth <= 0.1);
-                    //dont count low health enemies
+                //dont count low health enemies
 
                 var totalEnemyHealth = enemiesNearMouse.Sum(x => x.Health);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using LeagueSharp;
 using LeagueSharp.Common;
+using UltimateCarry.Champions;
 
 namespace UltimateCarry
 {
@@ -11,7 +12,7 @@ namespace UltimateCarry
         public static Champion Champion;
         public static Menu Menu;
         public static Orbwalking.Orbwalker Orbwalker;
-        public static Champions.Azir.Orbwalking.Orbwalker Azirwalker;
+        public static Azir.Orbwalking.Orbwalker Azirwalker;
         public static Helper Helper;
         // ReSharper disable once UnusedParameter.Local
         private static void Main(string[] args)
@@ -33,7 +34,7 @@ namespace UltimateCarry
             if (ObjectManager.Player.ChampionName == "Azir")
             {
                 var orbwalking = Menu.AddSubMenu(new Menu("AzirWalking", "Orbwalking"));
-                Azirwalker = new Champions.Azir.Orbwalking.Orbwalker(orbwalking);
+                Azirwalker = new Azir.Orbwalking.Orbwalker(orbwalking);
                 Menu.Item("FarmDelay").SetValue(new Slider(125, 100, 200));
             }
             else

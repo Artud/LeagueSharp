@@ -10,11 +10,12 @@ namespace UltimateCarry.Champions
     internal class Thresh : Champion
     {
         public const int QFollowTime = 3000;
-        public Spell E;
-        public Spell Q;
-        public int QFollowTick;
-        public Spell R;
-        public Spell W;
+        private static readonly Obj_AI_Hero Player = ObjectManager.Player;
+        public static Spell E;
+        public static Spell Q;
+        public static int QFollowTick;
+        public static Spell R;
+        public static Spell W;
 
         public Thresh()
         {
@@ -23,6 +24,7 @@ namespace UltimateCarry.Champions
             Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter2.OnInterruptableTarget += Interrupter_OnPosibleToInterrupt;
+            AntiGapcloser.OnEnemyGapcloser += OnEnemyGapCloser;
             PluginLoaded();
         }
 
@@ -54,9 +56,10 @@ namespace UltimateCarry.Champions
             Program.Menu.AddSubMenu(new Menu("SupportMode", "SupportMode"));
             Program.Menu.SubMenu("SupportMode").AddItem(new MenuItem("hitMinions", "Hit Minions").SetValue(false));
 
-            Program.Menu.AddSubMenu(new Menu("Passive", "Passive"));
-            Program.Menu.SubMenu("Passive").AddItem(new MenuItem("useQ_Interupt", "Q Interrupt").SetValue(false));
-            Program.Menu.SubMenu("Passive").AddItem(new MenuItem("useW_Interupt", "W Interrupt").SetValue(false));
+            Program.Menu.AddSubMenu(new Menu("Misc", "Misc"));
+            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("useQ_Interupt", "Q Interrupt").SetValue(false));
+            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("useE_Interupt", "E Interrupt").SetValue(false));
+            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("useE_GapClose", "E for gapcloser").SetValue(false));
 
             Program.Menu.AddSubMenu(new Menu("Drawing", "Drawing"));
             Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
@@ -118,6 +121,22 @@ namespace UltimateCarry.Champions
             }
         }
 
+        public void OnEnemyGapCloser(ActiveGapcloser gapcloser)
+        {
+            if (E.IsReady() && Program.Menu.Item("useE_GapCloser").GetValue<bool>() &&
+                Player.Distance(gapcloser.Sender) < E.Range + 100)
+            {
+                if (Player.Distance(gapcloser.Start) < Player.Distance(gapcloser.End))
+                {
+                    CastE("ToMe");
+                }
+                else
+                {
+                    CastE();
+                }
+            }
+        }
+
         private void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero target, Interrupter2.InterruptableTargetEventArgs args)
         {
             if (target.IsAlly)
@@ -130,7 +149,7 @@ namespace UltimateCarry.Champions
                 {
                     if (target.IsValidTarget(W.Range))
                     {
-                        E.Cast(target, Packets());
+                        E.Cast(target);
                         return;
                     }
                 }
@@ -146,7 +165,7 @@ namespace UltimateCarry.Champions
             LastQTarget = target;
         }
 
-        private void Game_OnGameUpdate(EventArgs args)
+        public void Game_OnGameUpdate(EventArgs args)
         {
             if (LastQTarget != null)
             {
@@ -231,13 +250,12 @@ namespace UltimateCarry.Champions
                 return;
             }
             var bestcastposition = new Vector3(0f, 0f, 0f);
-            foreach (
-                var friend in
-                    Program.Helper.OwnTeam.Where(
-                        hero =>
-                            !hero.IsMe && hero.Distance(ObjectManager.Player) <= W.Range + 300 &&
-                            hero.Distance(ObjectManager.Player) <= W.Range - 300 &&
-                            hero.Health / hero.MaxHealth * 100 >= 20 && Utility.CountEnemiesInRange(150) >= 1))
+            foreach (var friend in
+                Program.Helper.OwnTeam.Where(
+                    hero =>
+                        !hero.IsMe && hero.Distance(ObjectManager.Player) <= W.Range + 300 &&
+                        hero.Distance(ObjectManager.Player) <= W.Range - 300 && hero.Health / hero.MaxHealth * 100 >= 20 &&
+                        Utility.CountEnemiesInRange(150) >= 1))
             {
                 var center = ObjectManager.Player.Position;
                 const int points = 36;
@@ -328,8 +346,7 @@ namespace UltimateCarry.Champions
                 return;
             }
             E.Cast(
-                mode == "ToMe" ? GetReversePosition(ObjectManager.Player.Position, target.Position) : target.Position,
-                Packets());
+                mode == "ToMe" ? GetReversePosition(ObjectManager.Player.Position, target.Position) : target.Position);
         }
     }
 }

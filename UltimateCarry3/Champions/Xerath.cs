@@ -142,11 +142,10 @@ namespace UltimateCarry.Champions
             }
             R.Range = GetRRange();
             Obj_AI_Hero[] lowesttarget = { null };
-            foreach (
-                var enemy in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(hero => hero.IsValidTarget(R.Range))
-                        .Where(enemy => lowesttarget[0] == null || lowesttarget[0].Health > enemy.Health))
+            foreach (var enemy in
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(hero => hero.IsValidTarget(R.Range))
+                    .Where(enemy => lowesttarget[0] == null || lowesttarget[0].Health > enemy.Health))
             {
                 lowesttarget[0] = enemy;
             }
@@ -277,12 +276,11 @@ namespace UltimateCarry.Champions
 
             var victims = "";
 
-            foreach (
-                var target in
-                    Program.Helper.EnemyInfo.Where(
-                        x =>
-                            x.Player.IsVisible && x.Player.IsValidTarget(GetRRange()) &&
-                            ObjectManager.Player.GetSpellDamage(x.Player, SpellSlot.R) * 0.9 >= x.Player.Health))
+            foreach (var target in
+                Program.Helper.EnemyInfo.Where(
+                    x =>
+                        x.Player.IsVisible && x.Player.IsValidTarget(GetRRange()) &&
+                        ObjectManager.Player.GetSpellDamage(x.Player, SpellSlot.R) * 0.9 >= x.Player.Health))
             {
                 victims += target.Player.ChampionName + " ";
 

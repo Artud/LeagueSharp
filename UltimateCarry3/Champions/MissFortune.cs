@@ -218,12 +218,11 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
-            foreach (
-                var enemy in
-                    Program.Helper.EnemyTeam.Where(
-                        hero =>
-                            (hero.HasBuffOfType(BuffType.Snare) ||
-                             hero.HasBuffOfType(BuffType.Stun) && hero.IsValidTarget(E.Range + (E.Width / 2)))))
+            foreach (var enemy in
+                Program.Helper.EnemyTeam.Where(
+                    hero =>
+                        (hero.HasBuffOfType(BuffType.Snare) ||
+                         hero.HasBuffOfType(BuffType.Stun) && hero.IsValidTarget(E.Range + (E.Width / 2)))))
             {
                 E.Cast(enemy.Position, Packets());
                 return;
@@ -286,16 +285,15 @@ namespace UltimateCarry.Champions
                 return;
             }
             Obj_AI_Base[] nearstMinion = { null };
-            foreach (
-                var minion in
-                    allMinion.Where(
+            foreach (var minion in
+                allMinion.Where(
+                    minion =>
+                        minion.Distance(ObjectManager.Player) <= target.Distance(ObjectManager.Player) &&
+                        target.Distance(minion) < 450)
+                    .Where(
                         minion =>
-                            minion.Distance(ObjectManager.Player) <= target.Distance(ObjectManager.Player) &&
-                            target.Distance(minion) < 450)
-                        .Where(
-                            minion =>
-                                nearstMinion[0] == null ||
-                                minion.Distance(ObjectManager.Player) < nearstMinion[0].Distance(ObjectManager.Player)))
+                            nearstMinion[0] == null ||
+                            minion.Distance(ObjectManager.Player) < nearstMinion[0].Distance(ObjectManager.Player)))
             {
                 nearstMinion[0] = minion;
             }
@@ -314,12 +312,11 @@ namespace UltimateCarry.Champions
             var allMinion = MinionManager.GetMinions(
                 ObjectManager.Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             Obj_AI_Base[] nearstMinion = { null };
-            foreach (
-                var minion in
-                    allMinion.Where(
-                        minion =>
-                            nearstMinion[0] == null ||
-                            ObjectManager.Player.Distance(nearstMinion[0]) > ObjectManager.Player.Distance(minion)))
+            foreach (var minion in
+                allMinion.Where(
+                    minion =>
+                        nearstMinion[0] == null ||
+                        ObjectManager.Player.Distance(nearstMinion[0]) > ObjectManager.Player.Distance(minion)))
             {
                 nearstMinion[0] = minion;
             }

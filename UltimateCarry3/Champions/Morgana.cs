@@ -169,12 +169,9 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
-            foreach (
-                var enemy in
-                    Program.Helper.EnemyTeam.Where(hero => hero.IsValidTarget(400))
-                        .Where(
-                            enemy => enemy.IsValidTarget(Q.Range) && Q.GetPrediction(enemy).Hitchance >= HitChance.High)
-                )
+            foreach (var enemy in
+                Program.Helper.EnemyTeam.Where(hero => hero.IsValidTarget(400))
+                    .Where(enemy => enemy.IsValidTarget(Q.Range) && Q.GetPrediction(enemy).Hitchance >= HitChance.High))
             {
                 Q.Cast(enemy, Packets());
                 return;
@@ -187,12 +184,11 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
-            foreach (
-                var enemy in
-                    Program.Helper.EnemyTeam.Where(
-                        hero =>
-                            (hero.HasBuffOfType(BuffType.Snare) || hero.HasBuffOfType(BuffType.Stun) ||
-                             hero.HasBuffOfType(BuffType.Taunt) && hero.IsValidTarget(W.Range + (W.Width / 2)))))
+            foreach (var enemy in
+                Program.Helper.EnemyTeam.Where(
+                    hero =>
+                        (hero.HasBuffOfType(BuffType.Snare) || hero.HasBuffOfType(BuffType.Stun) ||
+                         hero.HasBuffOfType(BuffType.Taunt) && hero.IsValidTarget(W.Range + (W.Width / 2)))))
             {
                 W.Cast(enemy.Position, Packets());
                 return;

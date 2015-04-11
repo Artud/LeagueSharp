@@ -174,17 +174,15 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
-            foreach (
-                var friend in
-                    from friend in Program.Helper.OwnTeam.Where(hero => hero.Distance(ObjectManager.Player) <= R.Range)
-                    let enemyCount = Program.Helper.EnemyTeam.Count(hero => hero.Distance(friend) <= 600)
-                    let enemyCountnear = Program.Helper.EnemyTeam.Count(hero => hero.Distance(friend) <= 200)
-                    let frinedhealthprecent = friend.Health / friend.MaxHealth * 100
-                    where
-                        frinedhealthprecent <= 1 || (frinedhealthprecent <= 20 && enemyCount >= 1) ||
-                        (frinedhealthprecent <= 25 && enemyCount >= 2) ||
-                        (frinedhealthprecent <= 30 && enemyCountnear >= 2)
-                    select friend)
+            foreach (var friend in
+                from friend in Program.Helper.OwnTeam.Where(hero => hero.Distance(ObjectManager.Player) <= R.Range)
+                let enemyCount = Program.Helper.EnemyTeam.Count(hero => hero.Distance(friend) <= 600)
+                let enemyCountnear = Program.Helper.EnemyTeam.Count(hero => hero.Distance(friend) <= 200)
+                let frinedhealthprecent = friend.Health / friend.MaxHealth * 100
+                where
+                    frinedhealthprecent <= 1 || (frinedhealthprecent <= 20 && enemyCount >= 1) ||
+                    (frinedhealthprecent <= 25 && enemyCount >= 2) || (frinedhealthprecent <= 30 && enemyCountnear >= 2)
+                select friend)
             {
                 R.CastOnUnit(friend, Packets());
                 return;

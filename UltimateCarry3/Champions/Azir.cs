@@ -165,13 +165,12 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
-            foreach (
-                var obj in
-                    ObjectManager.Get<Obj_AI_Minion>()
-                        .Where(
-                            obj =>
-                                obj.Name == "AzirSoldier" && obj.IsAlly && obj.BoundingRadius < 66 &&
-                                obj.AttackSpeedMod > 1))
+            foreach (var obj in
+                ObjectManager.Get<Obj_AI_Minion>()
+                    .Where(
+                        obj =>
+                            obj.Name == "AzirSoldier" && obj.IsAlly && obj.BoundingRadius < 66 && obj.AttackSpeedMod > 1)
+                )
             {
                 var target =
                     ObjectManager.Get<Obj_AI_Hero>()
@@ -236,13 +235,12 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
-            foreach (
-                var obj in
-                    ObjectManager.Get<Obj_AI_Minion>()
-                        .Where(
-                            obj =>
-                                obj.Name == "AzirSoldier" && obj.IsAlly && obj.BoundingRadius < 66 &&
-                                obj.AttackSpeedMod > 1))
+            foreach (var obj in
+                ObjectManager.Get<Obj_AI_Minion>()
+                    .Where(
+                        obj =>
+                            obj.Name == "AzirSoldier" && obj.IsAlly && obj.BoundingRadius < 66 && obj.AttackSpeedMod > 1)
+                )
             {
                 var target =
                     ObjectManager.Get<Obj_AI_Hero>()
@@ -308,9 +306,8 @@ namespace UltimateCarry.Champions
 
             if (Program.Menu.Item("Draw_insec").GetValue<bool>())
             {
-                foreach (
-                    var enemy in
-                        ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsEnemy && hero.IsValidTarget(1300)))
+                foreach (var enemy in
+                    ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsEnemy && hero.IsValidTarget(1300)))
                 {
                     if (GetThrowPosition(enemy) != default(Vector3))
                     {
@@ -326,13 +323,12 @@ namespace UltimateCarry.Champions
 
             if (Program.Menu.Item("Draw_soldier").GetValue<bool>())
             {
-                foreach (
-                    var obj in
-                        ObjectManager.Get<Obj_AI_Minion>()
-                            .Where(
-                                obj =>
-                                    obj.Name == "AzirSoldier" && obj.IsAlly && obj.BoundingRadius < 66 &&
-                                    obj.AttackSpeedMod > 1))
+                foreach (var obj in
+                    ObjectManager.Get<Obj_AI_Minion>()
+                        .Where(
+                            obj =>
+                                obj.Name == "AzirSoldier" && obj.IsAlly && obj.BoundingRadius < 66 &&
+                                obj.AttackSpeedMod > 1))
                 {
                     Drawing.DrawCircle(obj.Position, SoldierAttackRange, Color.Blue);
                 }
@@ -790,24 +786,22 @@ namespace UltimateCarry.Champions
                     if (ActiveMode == OrbwalkingMode.LaneClear || ActiveMode == OrbwalkingMode.Mixed ||
                         ActiveMode == OrbwalkingMode.LastHit)
                     {
-                        foreach (
-                            var minion in
-                                from minion in
-                                    ObjectManager.Get<Obj_AI_Minion>()
-                                        .Where(
-                                            minion =>
-                                                minion.IsValidTarget(GetRealAutoAttackRange(minion)) &&
-                                                minion.Health > 0)
-                                let time =
-                                    (int) (Player.AttackCastDelay * 1000) + Game.Ping / 2 - 100 +
-                                    (int)
-                                        (1000 * Player.Distance(minion) /
-                                         (Player.IsMelee() ? float.MaxValue : Player.BasicAttack.MissileSpeed))
-                                let predHealth = HealthPrediction.GetHealthPrediction(minion, time, 125)
-                                where
-                                    minion.Team != GameObjectTeam.Neutral && predHealth > 0 &&
-                                    predHealth <= Player.GetAutoAttackDamage(minion, true)
-                                select minion)
+                        foreach (var minion in
+                            from minion in
+                                ObjectManager.Get<Obj_AI_Minion>()
+                                    .Where(
+                                        minion =>
+                                            minion.IsValidTarget(GetRealAutoAttackRange(minion)) && minion.Health > 0)
+                            let time =
+                                (int) (Player.AttackCastDelay * 1000) + Game.Ping / 2 - 100 +
+                                (int)
+                                    (1000 * Player.Distance(minion) /
+                                     (Player.IsMelee() ? float.MaxValue : Player.BasicAttack.MissileSpeed))
+                            let predHealth = HealthPrediction.GetHealthPrediction(minion, time, 125)
+                            where
+                                minion.Team != GameObjectTeam.Neutral && predHealth > 0 &&
+                                predHealth <= Player.GetAutoAttackDamage(minion, true)
+                            select minion)
                         {
                             return minion;
                         }
@@ -852,21 +846,19 @@ namespace UltimateCarry.Champions
                     if (ActiveMode == OrbwalkingMode.LaneClear)
                     {
                         var maxhealth = new float[] { 0 };
-                        foreach (
-                            var minion in
-                                from minion in
-                                    ObjectManager.Get<Obj_AI_Minion>()
-                                        .Where(minion => minion.IsValidTarget(GetRealAutoAttackRange(minion)))
-                                let predHealth =
-                                    HealthPrediction.LaneClearHealthPrediction(
-                                        minion, (int) ((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), 125)
-                                where
-                                    predHealth >= 2 * Player.GetAutoAttackDamage(minion, true) ||
-                                    Math.Abs(predHealth - minion.Health) < float.Epsilon
-                                where
-                                    minion.Health >= maxhealth[0] ||
-                                    Math.Abs(maxhealth[0] - float.MaxValue) < float.Epsilon
-                                select minion)
+                        foreach (var minion in
+                            from minion in
+                                ObjectManager.Get<Obj_AI_Minion>()
+                                    .Where(minion => minion.IsValidTarget(GetRealAutoAttackRange(minion)))
+                            let predHealth =
+                                HealthPrediction.LaneClearHealthPrediction(
+                                    minion, (int) ((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), 125)
+                            where
+                                predHealth >= 2 * Player.GetAutoAttackDamage(minion, true) ||
+                                Math.Abs(predHealth - minion.Health) < float.Epsilon
+                            where
+                                minion.Health >= maxhealth[0] || Math.Abs(maxhealth[0] - float.MaxValue) < float.Epsilon
+                            select minion)
                         {
                             result = minion;
                             maxhealth[0] = minion.MaxHealth;

@@ -136,13 +136,12 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
-            foreach (
-                var enemy in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(
-                            hero =>
-                                hero.IsValidTarget() &&
-                                hero.Health <= (ObjectManager.Player.GetSpellDamage(hero, SpellSlot.W) / 2)))
+            foreach (var enemy in
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(
+                        hero =>
+                            hero.IsValidTarget() &&
+                            hero.Health <= (ObjectManager.Player.GetSpellDamage(hero, SpellSlot.W) / 2)))
             {
                 R.Cast(enemy, Packets());
                 return;
@@ -244,10 +243,8 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
-            foreach (
-                var minion in
-                    allminions.Where(
-                        minion => minion.Health <= ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q)))
+            foreach (var minion in
+                allminions.Where(minion => minion.Health <= ObjectManager.Player.GetSpellDamage(minion, SpellSlot.Q)))
             {
                 Q.CastOnUnit(minion, Packets());
                 return;

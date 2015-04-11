@@ -343,10 +343,9 @@ namespace UltimateCarry.Champions
             {
                 var allMinions = MinionManager.GetMinions(
                     ObjectManager.Player.ServerPosition, laneClearRange, MinionTypes.All, MinionTeam.NotAlly);
-                foreach (
-                    var minion in
-                        allMinions.Where(minion => minion != null)
-                            .Where(minion => minion.IsValidTarget(laneClearRange) && E.IsReady()))
+                foreach (var minion in
+                    allMinions.Where(minion => minion != null)
+                        .Where(minion => minion.IsValidTarget(laneClearRange) && E.IsReady()))
                 {
                     E.Cast(Game.CursorPos, Packets());
                     UsedSkill();

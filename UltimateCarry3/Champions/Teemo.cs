@@ -137,36 +137,33 @@ namespace UltimateCarry.Champions
 
             if (Program.Menu.Item("Draw_Shroom1").GetValue<bool>())
             {
-                foreach (
-                    var pos in
-                        ShroomPositions.HighPriority.Where(
-                            shrom =>
-                                shrom.Distance(ObjectManager.Player.Position) <=
-                                Program.Menu.Item("Draw_Vision").GetValue<Slider>().Value))
+                foreach (var pos in
+                    ShroomPositions.HighPriority.Where(
+                        shrom =>
+                            shrom.Distance(ObjectManager.Player.Position) <=
+                            Program.Menu.Item("Draw_Vision").GetValue<Slider>().Value))
                 {
                     Drawing.DrawCircle(pos, 100, Color.Red);
                 }
             }
             if (Program.Menu.Item("Draw_Shroom2").GetValue<bool>())
             {
-                foreach (
-                    var pos in
-                        ShroomPositions.MediumPriority.Where(
-                            shrom =>
-                                shrom.Distance(ObjectManager.Player.Position) <=
-                                Program.Menu.Item("Draw_Vision").GetValue<Slider>().Value))
+                foreach (var pos in
+                    ShroomPositions.MediumPriority.Where(
+                        shrom =>
+                            shrom.Distance(ObjectManager.Player.Position) <=
+                            Program.Menu.Item("Draw_Vision").GetValue<Slider>().Value))
                 {
                     Drawing.DrawCircle(pos, 100, Color.OrangeRed);
                 }
             }
             if (Program.Menu.Item("Draw_Shroom3").GetValue<bool>())
             {
-                foreach (
-                    var pos in
-                        ShroomPositions.LowPriority.Where(
-                            shrom =>
-                                shrom.Distance(ObjectManager.Player.Position) <=
-                                Program.Menu.Item("Draw_Vision").GetValue<Slider>().Value))
+                foreach (var pos in
+                    ShroomPositions.LowPriority.Where(
+                        shrom =>
+                            shrom.Distance(ObjectManager.Player.Position) <=
+                            Program.Menu.Item("Draw_Vision").GetValue<Slider>().Value))
                 {
                     Drawing.DrawCircle(pos, 100, Color.Orange);
                 }
@@ -222,30 +219,27 @@ namespace UltimateCarry.Champions
             }
             if (Program.Menu.Item("put_Shroom1").GetValue<bool>())
             {
-                foreach (
-                    var place in
-                        ShroomPositions.HighPriority.Where(
-                            pos => pos.Distance(ObjectManager.Player.Position) <= R.Range && !IsShroomed(pos)))
+                foreach (var place in
+                    ShroomPositions.HighPriority.Where(
+                        pos => pos.Distance(ObjectManager.Player.Position) <= R.Range && !IsShroomed(pos)))
                 {
                     R.Cast(place, Packets());
                 }
             }
             if (Program.Menu.Item("put_Shroom2").GetValue<bool>())
             {
-                foreach (
-                    var place in
-                        ShroomPositions.MediumPriority.Where(
-                            pos => pos.Distance(ObjectManager.Player.Position) <= R.Range && !IsShroomed(pos)))
+                foreach (var place in
+                    ShroomPositions.MediumPriority.Where(
+                        pos => pos.Distance(ObjectManager.Player.Position) <= R.Range && !IsShroomed(pos)))
                 {
                     R.Cast(place, Packets());
                 }
             }
             if (Program.Menu.Item("put_Shroom3").GetValue<bool>())
             {
-                foreach (
-                    var place in
-                        ShroomPositions.LowPriority.Where(
-                            pos => pos.Distance(ObjectManager.Player.Position) <= R.Range && !IsShroomed(pos)))
+                foreach (var place in
+                    ShroomPositions.LowPriority.Where(
+                        pos => pos.Distance(ObjectManager.Player.Position) <= R.Range && !IsShroomed(pos)))
                 {
                     R.Cast(place, Packets());
                 }

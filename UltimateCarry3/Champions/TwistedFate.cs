@@ -242,12 +242,11 @@ namespace UltimateCarry.Champions
                 case 0:
                     return;
                 case 1:
-                    foreach (
-                        var enemy in
-                            Program.Helper.EnemyTeam.Where(
-                                hero =>
-                                    (hero.HasBuffOfType(BuffType.Snare) ||
-                                     hero.HasBuffOfType(BuffType.Stun) && hero.IsValidTarget(Q.Range))))
+                    foreach (var enemy in
+                        Program.Helper.EnemyTeam.Where(
+                            hero =>
+                                (hero.HasBuffOfType(BuffType.Snare) ||
+                                 hero.HasBuffOfType(BuffType.Stun) && hero.IsValidTarget(Q.Range))))
                     {
                         Q.Cast(enemy, Packets());
                         return;
@@ -270,12 +269,11 @@ namespace UltimateCarry.Champions
                 case 0:
                     return;
                 case 1:
-                    foreach (
-                        var enemy in
-                            Program.Helper.EnemyTeam.Where(
-                                hero =>
-                                    (hero.HasBuffOfType(BuffType.Snare) ||
-                                     hero.HasBuffOfType(BuffType.Stun) && hero.IsValidTarget(Q.Range))))
+                    foreach (var enemy in
+                        Program.Helper.EnemyTeam.Where(
+                            hero =>
+                                (hero.HasBuffOfType(BuffType.Snare) ||
+                                 hero.HasBuffOfType(BuffType.Stun) && hero.IsValidTarget(Q.Range))))
                     {
                         Q.Cast(enemy, Packets());
                         return;

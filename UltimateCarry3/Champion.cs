@@ -3,6 +3,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using UltimateCarry.Champions;
 
 namespace UltimateCarry
 {
@@ -49,11 +50,11 @@ namespace UltimateCarry
             bool islaneclear;
             if (ObjectManager.Player.ChampionName == "Azir")
             {
-                ismixed = Program.Azirwalker.ActiveMode == Champions.Azir.Orbwalking.OrbwalkingMode.Mixed &&
+                ismixed = Program.Azirwalker.ActiveMode == Azir.Orbwalking.OrbwalkingMode.Mixed &&
                           ManaManagerList.Contains("ManaManager_Harass");
-                islasthit = Program.Azirwalker.ActiveMode == Champions.Azir.Orbwalking.OrbwalkingMode.LastHit &&
+                islasthit = Program.Azirwalker.ActiveMode == Azir.Orbwalking.OrbwalkingMode.LastHit &&
                             ManaManagerList.Contains("ManaManager_LastHit");
-                islaneclear = Program.Azirwalker.ActiveMode == Champions.Azir.Orbwalking.OrbwalkingMode.LaneClear &&
+                islaneclear = Program.Azirwalker.ActiveMode == Azir.Orbwalking.OrbwalkingMode.LaneClear &&
                               ManaManagerList.Contains("ManaManager_LaneClear");
             }
             else
@@ -133,11 +134,10 @@ namespace UltimateCarry
                 return;
             }
             spell.UpdateSourcePosition(sourcePosition, sourcePosition);
-            foreach (
-                var hero in
-                    Program.Helper.EnemyTeam.Where(
-                        hero => (hero.Distance(sourcePosition) < spell.Range) && hero.IsValidTarget())
-                        .Where(hero => spell.GetPrediction(hero).Hitchance >= HitChance.High))
+            foreach (var hero in
+                Program.Helper.EnemyTeam.Where(
+                    hero => (hero.Distance(sourcePosition) < spell.Range) && hero.IsValidTarget())
+                    .Where(hero => spell.GetPrediction(hero).Hitchance >= HitChance.High))
             {
                 spell.Cast(hero, Packets());
                 return;
@@ -280,13 +280,12 @@ namespace UltimateCarry
             {
                 return;
             }
-            foreach (
-                var friend in
-                    Program.Helper.OwnTeam.Where(hero => hero.Distance(ObjectManager.Player) <= spell.Range)
-                        .Where(
-                            friend =>
-                                friend.Health / friend.MaxHealth * 100 <= percent &&
-                                Utility.CountEnemiesInRange(1000) >= 1))
+            foreach (var friend in
+                Program.Helper.OwnTeam.Where(hero => hero.Distance(ObjectManager.Player) <= spell.Range)
+                    .Where(
+                        friend =>
+                            friend.Health / friend.MaxHealth * 100 <= percent && Utility.CountEnemiesInRange(1000) >= 1)
+                )
             {
                 if (skillshot)
                 {
@@ -341,14 +340,12 @@ namespace UltimateCarry
             var target = TargetSelector.GetTarget(spell.Range + range, damageType);
             Obj_AI_Base[] nearstMinion = { null };
             var allminions = MinionManager.GetMinions(target.Position, range, minionTypes, minionTeam);
-            foreach (
-                var minion in
-                    allminions.Where(
-                        minion =>
-                            minion.Distance(ObjectManager.Player) <= spell.Range && minion.Distance(target) <= range)
-                        .Where(
-                            minion =>
-                                nearstMinion[0] == null || nearstMinion[0].Distance(target) >= minion.Distance(target)))
+            foreach (var minion in
+                allminions.Where(
+                    minion => minion.Distance(ObjectManager.Player) <= spell.Range && minion.Distance(target) <= range)
+                    .Where(
+                        minion => nearstMinion[0] == null || nearstMinion[0].Distance(target) >= minion.Distance(target))
+                )
             {
                 nearstMinion[0] = minion;
             }

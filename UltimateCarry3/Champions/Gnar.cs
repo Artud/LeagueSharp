@@ -1,4 +1,4 @@
-﻿ //namespace UltimateCarry
+﻿//namespace UltimateCarry
 
 namespace UltimateCarry.Champions
 {

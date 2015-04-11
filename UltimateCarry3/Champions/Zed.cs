@@ -254,11 +254,9 @@ namespace UltimateCarry.Champions
 
             if (CloneW != null)
             {
-                foreach (
-                    var hero in
-                        Program.Helper.EnemyTeam.Where(
-                            hero => (hero.Distance(CloneW.Position) < Q.Range) && hero.IsValidTarget() && hero.IsVisible)
-                    )
+                foreach (var hero in
+                    Program.Helper.EnemyTeam.Where(
+                        hero => (hero.Distance(CloneW.Position) < Q.Range) && hero.IsValidTarget() && hero.IsVisible))
                 {
                     Q.Cast(hero.Position, Packets());
                     return;
@@ -269,10 +267,9 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
-            foreach (
-                var hero in
-                    Program.Helper.EnemyTeam.Where(
-                        hero => (hero.Distance(CloneR.Position) < Q.Range) && hero.IsValidTarget() && hero.IsVisible))
+            foreach (var hero in
+                Program.Helper.EnemyTeam.Where(
+                    hero => (hero.Distance(CloneR.Position) < Q.Range) && hero.IsValidTarget() && hero.IsVisible))
             {
                 Q.Cast(hero.Position, Packets());
             }

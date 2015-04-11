@@ -34,7 +34,7 @@ namespace UltimateCarry
             _menu.AddItem(
                 new MenuItem("AutoBushKey", "Key").SetValue(
                     new KeyBind(Program.Menu.Item("Orbwalk").GetValue<KeyBind>().Key, KeyBindType.Press)));
-                //32 == space
+            //32 == space
 
             var useWardsMenu = _menu.AddSubMenu(new Menu("Use Wards: ", "AutoBushUseWards"));
 
@@ -78,13 +78,12 @@ namespace UltimateCarry
 
             if (_menu.Item("AutoBushEnabled").GetValue<bool>() && _menu.Item("AutoBushKey").GetValue<KeyBind>().Active)
             {
-                foreach (
-                    var enemy in
-                        Program.Helper.EnemyInfo.Where(
-                            x =>
-                                x.Player.IsValid && !x.Player.IsVisible && !x.Player.IsDead &&
-                                x.Player.Distance(ObjectManager.Player.ServerPosition) < 1000 &&
-                                time - x.LastSeen < 2500).Select(x => x.Player))
+                foreach (var enemy in
+                    Program.Helper.EnemyInfo.Where(
+                        x =>
+                            x.Player.IsValid && !x.Player.IsVisible && !x.Player.IsDead &&
+                            x.Player.Distance(ObjectManager.Player.ServerPosition) < 1000 && time - x.LastSeen < 2500)
+                        .Select(x => x.Player))
                 {
                     var bestWardPos = GetWardPos(enemy.ServerPosition, 165, 2);
 
