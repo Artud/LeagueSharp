@@ -8,6 +8,7 @@ namespace UltimateCarry.Champions
 {
     internal class TwistedFate : Champion
     {
+        private static readonly Obj_AI_Hero Player = ObjectManager.Player;
         public int CardPickTick;
         public Spell Q;
         public Spell R;
@@ -38,6 +39,8 @@ namespace UltimateCarry.Champions
                     new MenuItem("useQ_Harass", "Use Q").SetValue(
                         new StringList(new[] { "Not", "OnStun", "Always" }, 1)));
             Program.Menu.SubMenu("Harass").AddItem(new MenuItem("useW_Harass", "Use W").SetValue(true));
+            Program.Menu.SubMenu("Harass")
+                .AddItem(new MenuItem("wMana", "Blue card if mana less than").SetValue(new Slider(40, 1, 100)));
 
             Program.Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             Program.Menu.SubMenu("LaneClear").AddItem(new MenuItem("useQ_LaneClear", "Use Q").SetValue(true));
@@ -171,7 +174,7 @@ namespace UltimateCarry.Champions
             switch (Program.Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Mixed:
-                    if (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana * 100 <= 70)
+                    if (ObjectManager.Player.Mana / ObjectManager.Player.MaxMana * 100 < Program.Menu.Item("wMana").GetValue<Slider>().Value)
                     {
                         PickBlue();
                     }
