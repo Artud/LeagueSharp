@@ -24,7 +24,7 @@ namespace UltimateCarry.Champions
             Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter2.OnInterruptableTarget += Interrupter_OnPosibleToInterrupt;
-            AntiGapcloser.OnEnemyGapcloser += OnEnemyGapCloser;
+            AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
             PluginLoaded();
         }
 
@@ -59,7 +59,7 @@ namespace UltimateCarry.Champions
             Program.Menu.AddSubMenu(new Menu("Misc", "Misc"));
             Program.Menu.SubMenu("Misc").AddItem(new MenuItem("useQ_Interupt", "Q Interrupt").SetValue(false));
             Program.Menu.SubMenu("Misc").AddItem(new MenuItem("useE_Interupt", "E Interrupt").SetValue(false));
-            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("useE_GapClose", "E for gapcloser").SetValue(false));
+            Program.Menu.SubMenu("Misc").AddItem(new MenuItem("useE_GapCloser", "E for gapcloser").SetValue(false));
 
             Program.Menu.AddSubMenu(new Menu("Drawing", "Drawing"));
             Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_Disabled", "Disable All").SetValue(false));
@@ -67,7 +67,10 @@ namespace UltimateCarry.Champions
             Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_W", "Draw W").SetValue(true));
             Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_E", "Draw E").SetValue(true));
             Program.Menu.SubMenu("Drawing").AddItem(new MenuItem("Draw_R", "Draw R").SetValue(true));
+
+            Program.Menu.AddItem(new MenuItem("WQMouse" , "W and then Q to mouse").SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
         }
+        
 
         private void LoadSpells()
         {
@@ -121,19 +124,16 @@ namespace UltimateCarry.Champions
             }
         }
 
-        public void OnEnemyGapCloser(ActiveGapcloser gapcloser)
+        public void OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (E.IsReady() && Program.Menu.Item("useE_GapCloser").GetValue<bool>() &&
-                Player.Distance(gapcloser.Sender) < E.Range + 100)
+            if (gapcloser.Sender.IsAlly)
             {
-                if (Player.Distance(gapcloser.Start) < Player.Distance(gapcloser.End))
-                {
-                    CastE("ToMe");
-                }
-                else
-                {
-                    CastE();
-                }
+                return;
+            }
+
+            if (E.IsReady() && Program.Menu.Item("useE_GapCloser").GetValue<bool>() && gapcloser.Sender.IsValidTarget())
+            {
+                E.Cast(gapcloser.Start);
             }
         }
 
@@ -160,6 +160,7 @@ namespace UltimateCarry.Champions
             {
                 return;
             }
+            QFollowTick = Environment.TickCount;
             Q.Cast(target, Packets());
             QFollowTick = Environment.TickCount;
             LastQTarget = target;
@@ -240,6 +241,38 @@ namespace UltimateCarry.Champions
                         Cast_BasicCircleSkillshot_AOE_Farm(E);
                     }
                     break;
+            }
+
+            if (Program.Menu.Item("WQMouse").GetValue<KeyBind>().Active && Q.IsReady() && W.IsReady())
+            {
+                W.Cast(Player.Position);
+                Q.Cast(Game.CursorPos);
+            }
+            try
+            {
+                var target =
+                    (Obj_AI_Minion)
+                        MinionManager.GetMinions(
+                            ObjectManager.Player.Position, Q.Range, MinionTypes.All, MinionTeam.Neutral)
+                            .FirstOrDefault();
+                if (target.IsValidTarget())
+                {
+                    if (Q.Cast(target) == Spell.CastStates.SuccessfullyCasted)
+                    {
+                        Utility.DelayAction.Add(
+                            2000, () =>
+                            {
+                                if (target.IsValidTarget() && target.HasBuff("ThreshQ"))
+                                {
+                                    Q.Cast();
+                                }
+                            });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 
@@ -347,6 +380,10 @@ namespace UltimateCarry.Champions
             }
             E.Cast(
                 mode == "ToMe" ? GetReversePosition(ObjectManager.Player.Position, target.Position) : target.Position);
+        }
+        private static bool IsSecondQ()
+        {
+            return Q.Instance.Name == "threshqleap";
         }
     }
 }
