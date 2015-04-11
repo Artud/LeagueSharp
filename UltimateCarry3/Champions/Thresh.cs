@@ -248,31 +248,34 @@ namespace UltimateCarry.Champions
                 W.Cast(Player.Position);
                 Q.Cast(Game.CursorPos);
             }
-            try
+            if (Program.Menu.Item("WQMouse").GetValue<KeyBind>().Active)
             {
-                var target =
-                    (Obj_AI_Minion)
-                        MinionManager.GetMinions(
-                            ObjectManager.Player.Position, Q.Range, MinionTypes.All, MinionTeam.Neutral)
-                            .FirstOrDefault();
-                if (target.IsValidTarget())
+                try
                 {
-                    if (Q.Cast(target) == Spell.CastStates.SuccessfullyCasted)
+                    var target =
+                        (Obj_AI_Minion)
+                            MinionManager.GetMinions(
+                                ObjectManager.Player.Position, Q.Range, MinionTypes.All, MinionTeam.Neutral)
+                                .FirstOrDefault();
+                    if (target.IsValidTarget())
                     {
-                        Utility.DelayAction.Add(
-                            2000, () =>
-                            {
-                                if (target.IsValidTarget() && target.HasBuff("ThreshQ"))
+                        if (Q.Cast(target) == Spell.CastStates.SuccessfullyCasted)
+                        {
+                            Utility.DelayAction.Add(
+                                2000, () =>
                                 {
-                                    Q.Cast();
-                                }
-                            });
+                                    if (target.IsValidTarget() && target.HasBuff("ThreshQ"))
+                                    {
+                                        Q.Cast();
+                                    }
+                                });
+                        }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
         }
 
