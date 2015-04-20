@@ -127,7 +127,7 @@ namespace HecaCopter2
 
             Game.OnUpdate += Game_OnUpdate;
 
-            AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
+            AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
 
             Drawing.OnDraw += Drawing_OnDraw;
 
@@ -135,7 +135,19 @@ namespace HecaCopter2
                 "<font color='#FFFFFFF'> HecaCopter By</font> <font color='#0000FF'>Artud and imsosharp</font>");
         }
 
-        private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser) {}
+        public static void OnEnemyGapcloser(ActiveGapcloser gapcloser)
+        {
+            if (gapcloser.Sender.IsAlly)
+            {
+                return;
+            }
+
+            if (_e.IsReady()  && gapcloser.Sender.IsValidTarget())
+            {
+                _e.Cast(gapcloser.Start);
+            }
+        }
+
 
         private static void Game_OnUpdate(EventArgs args)
         {
@@ -147,6 +159,9 @@ namespace HecaCopter2
                     break;
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo();
+                    break;
+                case Orbwalking.OrbwalkingMode.Mixed:
+                    Harass();
                     break;
             }
             KillSteal();
@@ -198,7 +213,14 @@ namespace HecaCopter2
 
         private static void Harass()
         {
+            var nearbyEnemies =
+                HeroManager.Enemies.Where(h => h.IsValidTarget() && h.Distance(_player) < 1000)
+                    .OrderBy(h => h.Distance(_player));
             var QTarget = TargetSelector.GetTarget(_q.Range, TargetSelector.DamageType.Physical);
+            if (!nearbyEnemies.Any())
+            {
+                return;
+            }
             if (_player.ManaPercentage() > _config.Item("harassMM").GetValue<Slider>().Value)
             {
                 if (_config.Item("harassQ").GetValue<bool>() && _q.IsReady() && QTarget.IsValidTarget())
@@ -206,7 +228,7 @@ namespace HecaCopter2
                     _q.Cast();
                 }
             }
-        }
+       }
 
         private static void LaneClear()
         {
